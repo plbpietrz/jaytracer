@@ -1,14 +1,14 @@
 package org.rhx.graphics.raytracer;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferInt;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Paths;
 
-import static org.rhx.graphics.raytracer.Ray.dir;
-import static org.rhx.graphics.raytracer.Ray.org;
-import static org.rhx.graphics.raytracer.Ray.pap;
+import static org.rhx.graphics.raytracer.Ray.*;
 import static org.rhx.graphics.raytracer.Vec3.*;
 
 /**
@@ -19,12 +19,10 @@ public class Raytracer {
         int nx = 200;
         int ny = 100;
 
-        File outImg = Paths.get("out_img.ppm").toFile();
-        PrintWriter printWriter = new PrintWriter(new FileWriter(outImg));
+        BufferedImage image = new BufferedImage(nx, ny, BufferedImage.TYPE_INT_RGB);
+        DataBuffer dataBuffer = image.getRaster().getDataBuffer();
 
-        printWriter.println("P3");
-        printWriter.println(nx + " " + ny);
-        printWriter.println(255);
+        DataBufferInt dataBufferInt = (DataBufferInt) dataBuffer;
 
         Vec3 lowerLeftCorner = Vec3.of(-2.0f, -1.0f, -1.0f);
         Vec3 horizontal = Vec3.of(4.0f, 0.0f, 0.0f);
@@ -41,15 +39,16 @@ public class Raytracer {
 
                 Vec3 color = color(ray);
 
-                int ir = (int) (255.99 * color.r());
-                int ig = (int) (255.99 * color.g());
-                int ib = (int) (255.99 * color.b());
-
-                StringBuffer sb = new StringBuffer();
-                sb.append(ir).append(" ").append(ig).append(" ").append(ib);
-                printWriter.println(sb);
+                int ic = 0;
+                ic |= ((int) (255.99 * color.r())) << 16;
+                ic |= ((int) (255.99 * color.g())) << 8;
+                ic |= ((int) (255.99 * color.b()));
+                dataBufferInt.setElem(j * nx + i, ic);
             }
         }
+
+        File outImg = Paths.get("out_img.jpg").toFile();
+        ImageIO.write(image, "jpg", outImg);
     }
 
     private static Vec3 color(Ray ray) {
@@ -57,7 +56,6 @@ public class Raytracer {
         if (t > 0.0f) {
             Vec3 n = Vec3.unit(sub(pap(t, ray), Vec3.of(0.0f, 0.0f, -1.0f)));
             return mul(0.5f, Vec3.of(n.x() + 1, n.y() + 1, n.z() + 1));
-
         } else {
             Vec3 unit = unit(dir(ray));
             t = 0.5f * (unit.y() + 1.0f);

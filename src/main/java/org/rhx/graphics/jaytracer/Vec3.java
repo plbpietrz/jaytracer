@@ -1,4 +1,4 @@
-package org.rhx.graphics.raytracer;
+package org.rhx.graphics.jaytracer;
 
 import static java.lang.Math.sqrt;
 
@@ -105,4 +105,5 @@ public class Vec3 {
         throw new UnsupportedOperationException();
     }
 
+    public static Vec3 ZERO = Vec3.of(0.0f, 0.0f, 0.0f);
 }

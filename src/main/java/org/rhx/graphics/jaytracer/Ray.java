@@ -1,10 +1,10 @@
-package org.rhx.graphics.raytracer;
+package org.rhx.graphics.jaytracer;
 
-import static org.rhx.graphics.raytracer.Vec3.add;
-import static org.rhx.graphics.raytracer.Vec3.mul;
+import static org.rhx.graphics.jaytracer.Vec3.add;
+import static org.rhx.graphics.jaytracer.Vec3.mul;
 
 /**
- * Ray instance objcet
+ * Ray instance object.
  */
 public class Ray {
 
@@ -16,6 +16,11 @@ public class Ray {
         B = b;
     }
 
+    /**
+     * Return the origin of the ray.
+     * @param r {@link Ray}
+     * @return rays origin {@link Vec3}
+     */
     public static Vec3 org(final Ray r) {
         return r.A;
     }

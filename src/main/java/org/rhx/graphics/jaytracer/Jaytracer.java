@@ -1,4 +1,4 @@
-package org.rhx.graphics.raytracer;
+package org.rhx.graphics.jaytracer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -8,13 +8,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.rhx.graphics.raytracer.Ray.*;
-import static org.rhx.graphics.raytracer.Vec3.*;
+import static org.rhx.graphics.jaytracer.Ray.*;
+import static org.rhx.graphics.jaytracer.Vec3.*;
 
 /**
- * Raytracer main class.
+ * Jaytracer main class.
  */
-public class Raytracer {
+public class Jaytracer {
     public static void main(String[] args) throws IOException {
         int nx = 200;
         int ny = 100;

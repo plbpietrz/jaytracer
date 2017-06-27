@@ -28,16 +28,17 @@ public class Sphere implements Hitable {
         Vec3 oc = sub(Ray.org(r), center);
         float a = dot(dir(r), dir(r));
         float b = dot(oc, dir(r));
-        float c = dot(oc, oc);
+        float c = dot(oc, oc) - radius*radius;
 
         float discriminant = b * b - a * c;
         if (discriminant > 0) {
             float temp = (-b - (float) sqrt(discriminant)) / a;
+            Vec3 pap = pap(temp, r);
             if (tMin < temp && temp < tMax) {
 //                rec.get().t = temp;
 //                rec.get().p = pap(temp, r);
 //                rec.get().normal = div(sub(rec.get().p, center), radius);
-                rec.set(HitRecord.of(temp, pap(temp, r), div(sub(rec.get().p, center), radius)));
+                rec.set(HitRecord.of(temp, pap, div(sub(pap, center), radius)));
                 return true;
             }
             temp = (-b + (float) sqrt(discriminant)) / a;
@@ -45,7 +46,7 @@ public class Sphere implements Hitable {
 //                rec.get().t = temp;
 //                rec.get().p = pap(temp, r);
 //                rec.get().normal = div(sub(rec.get().p, center), radius);
-                rec.set(HitRecord.of(temp, pap(temp, r), div(sub(rec.get().p, center), radius)));
+                rec.set(HitRecord.of(temp, pap, div(sub(pap, center), radius)));
                 return true;
             }
         }

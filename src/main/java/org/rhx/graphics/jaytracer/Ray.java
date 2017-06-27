@@ -11,9 +11,13 @@ public class Ray {
     private final Vec3 A;
     private final Vec3 B;
 
-    public Ray(Vec3 a, Vec3 b) {
+    private Ray(Vec3 a, Vec3 b) {
         A = a;
         B = b;
+    }
+
+    public static Ray of(Vec3 a, Vec3 b) {
+        return new Ray(a, b);
     }
 
     /**

@@ -105,5 +105,9 @@ public class Vec3 {
         throw new UnsupportedOperationException();
     }
 
+    public static Vec3 neg(Vec3 v) {
+        return Vec3.of(-v.e0, -v.e1, -v.e2);
+    }
+
     public static Vec3 ZERO = Vec3.of(0.0f, 0.0f, 0.0f);
 }

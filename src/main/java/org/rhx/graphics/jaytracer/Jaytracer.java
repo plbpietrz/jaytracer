@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.rhx.graphics.jaytracer.Ray.*;
 import static org.rhx.graphics.jaytracer.Vec3.*;
@@ -35,27 +36,28 @@ public class Jaytracer implements Renderer {
     public void drawOn(Drawable drawable) {
         int nx = scrWidth;
         int ny = scrHeight;
-        Vec3 lowerLeftCorner = Vec3.of(-2f, -1f, -1f);
-        Vec3 horizontal      = Vec3.of(4f, 0f, 0f);
-        Vec3 vertical        = Vec3.of(0f, 2f, 0f);
-        Vec3 origin          = Vec3.of(0f, 0f, 0f);
+        int ns = 20;
+
 
         List<Hitable> hitables = new ArrayList<>();
         hitables.add(Sphere.of(Vec3.of(0f,0f,-1f),.5f));
-        hitables.add(Sphere.of(Vec3.of(.3f,.5f,-.8f),.3f));
         hitables.add(Sphere.of(Vec3.of(0f,-100.5f,-1f),100f));
         HitableList world = HitableList.of(hitables);
 
+        Camera camera = new Camera();
+        Random rand = new Random(System.currentTimeMillis());
         for (int j = ny - 1; j >= 0; j--) {
             for (int i = 0; i < nx; i++) {
-                float u = ((float) i) / ((float) nx);
-                float v = ((float) j) / ((float) ny);
 
-                Ray ray = Ray.of(origin, add(lowerLeftCorner, mul(u, horizontal), mul(v, vertical)));
-                Vec3 p = pap(2f, ray);
-
-                Vec3 color = color(ray, world);
-
+                Vec3 color = Vec3.ZERO;
+                for (int s = 0; s < ns; ++s) {
+                    float u = (float)(i + rand.nextDouble())/(float)nx;
+                    float v = (float)(j + rand.nextDouble())/(float)ny;
+                    Ray r = camera.getRay(u, v);
+                    Ray.pap(2f, r);
+                    color = Vec3.add(color, color(r, world));
+                }
+                color = Vec3.div(color, (float)ns);
                 int ic = 0;
                 ic |= ((int) (255.99f * color.r())) << 16;
                 ic |= ((int) (255.99f * color.g())) << 8;
@@ -80,14 +82,14 @@ public class Jaytracer implements Renderer {
     }
 
     private static Vec3 color(Ray ray, Hitable world) {
-        OutRef<Hitable.HitRecord> rec = OutRef.of((Hitable.HitRecord) null);
-        if (world.hit(ray, 0f, Float.MAX_VALUE, rec)) {
+        Hitable.HitRecord rec = world.hit(ray, 0f, Float.MAX_VALUE);
+        if (rec != null) {
             return mul(
                     .5f,
                     Vec3.of(
-                            rec.get().normal.x()+1,
-                            rec.get().normal.y()+1,
-                            rec.get().normal.z()+1)
+                            rec.normal.x()+1,
+                            rec.normal.y()+1,
+                            rec.normal.z()+1)
             );
         } else {
             Vec3 unitDir = unit(dir(ray));

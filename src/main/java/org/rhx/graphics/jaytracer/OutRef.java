@@ -12,7 +12,7 @@ public class OutRef<T> {
     }
 
     public static <T> OutRef<T> empty() {
-        return new OutRef<T>(null);
+        return new OutRef<>(null);
     }
 
     public T get() {

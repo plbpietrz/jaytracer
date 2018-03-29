@@ -23,8 +23,8 @@ public class MainFrame {
             width = Integer.parseInt(args[WIDTH_PARAM]);
             height = Integer.parseInt(args[HEIGHT_PARAM]);
         } else {
-            width = 640;
-            height = 480;
+            width = 800;
+            height = 400;
         }
 
         final JFrame frame = buildFrame(width, height);

@@ -5,7 +5,7 @@ package org.rhx.graphics.jaytracer;
  */
 public interface Hitable {
 
-    boolean hit(Ray ray, float tMin, float tMax, OutRef<HitRecord> hitRecord);
+    HitRecord hit(Ray ray, float tMin, float tMax);
 
     class HitRecord {
 

@@ -15,17 +15,16 @@ public class HitableList implements Hitable {
     }
 
     @Override
-    public boolean hit(Ray ray, float tMin, float tMax, OutRef<HitRecord> rec) {
-        OutRef<HitRecord> tempRec = OutRef.empty();
-        boolean hitAnything = false;
+    public HitRecord hit(Ray ray, float tMin, float tMax) {
+        HitRecord rec = null;
         float closestSoFar = tMax;
         for (Hitable hitable : hitables) {
-            if (hitable.hit(ray, tMin, closestSoFar, tempRec)) {
-                hitAnything = true;
-                closestSoFar = tempRec.get().t;
-                rec.set(tempRec.get());
+            HitRecord tempRec = hitable.hit(ray, tMin, closestSoFar);
+            if (tempRec != null) {
+                closestSoFar = tempRec.t;
+                rec = tempRec;
             }
         }
-        return hitAnything;
+        return rec;
     }
 }

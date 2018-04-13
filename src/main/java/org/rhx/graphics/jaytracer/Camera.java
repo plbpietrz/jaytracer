@@ -1,5 +1,8 @@
 package org.rhx.graphics.jaytracer;
 
+import org.rhx.graphics.jaytracer.data.Ray;
+import org.rhx.graphics.jaytracer.data.Vec3;
+
 public class Camera {
 
     public Vec3 origin;

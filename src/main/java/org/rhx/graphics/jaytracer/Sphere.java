@@ -1,9 +1,9 @@
 package org.rhx.graphics.jaytracer;
 
+import org.rhx.graphics.jaytracer.data.*;
+
 import static java.lang.Math.sqrt;
-import static org.rhx.graphics.jaytracer.Ray.dir;
-import static org.rhx.graphics.jaytracer.Ray.pap;
-import static org.rhx.graphics.jaytracer.Vec3.*;
+import static org.rhx.graphics.jaytracer.data.Vec3.*;
 
 /**
  * Renderable sphere.
@@ -12,37 +12,49 @@ public class Sphere implements Hitable {
 
     public final Vec3 center;
     public final float radius;
+    public final Material material;
 
 
-    private Sphere(Vec3 center, float radius) {
+    private Sphere(Vec3 center, float radius, final Material material) {
         this.center = center;
         this.radius = radius;
+        this.material = material;
     }
 
-    public static Sphere of(Vec3 center, float radius) {
-        return new Sphere(center, radius);
+    public static Sphere of(Vec3 center, float radius, final Material material) {
+        return new Sphere(center, radius, material);
     }
 
     @Override
     public HitRecord hit(Ray r, float tMin, float tMax) {
-        Vec3 oc = sub(Ray.org(r), center);
-        float a = dot(dir(r), dir(r));
-        float b = dot(oc, dir(r));
+        Vec3 oc = sub(r.orig, center);
+        float a = dot(r.dir, r.dir);
+        float b = dot(oc, r.dir);
         float c = dot(oc, oc) - radius*radius;
 
-        float discriminant = b * b - a * c;
+        float discriminant = b*b - a*c;
         if (discriminant > 0) {
             float temp = (-b - (float) sqrt(discriminant)) / a;
-            Vec3 pap = pap(temp, r);
             if (tMin < temp && temp < tMax) {
-                return HitRecord.of(temp, pap, div(sub(pap, center), radius));
+                Vec3 pap = Ray.pap(temp, r);
+                return HitRecord.of(temp, pap, div(sub(pap, center), radius), material);
             }
             temp = (-b + (float) sqrt(discriminant)) / a;
             if (tMin < temp && temp < tMax) {
-                return HitRecord.of(temp, pap, div(sub(pap, center), radius));
+                Vec3 pap = Ray.pap(temp, r);
+                return HitRecord.of(temp, pap, div(sub(pap, center), radius), material);
             }
         }
         return null;
     }
 
+    @Override
+    public Material getMaterial() {
+        return material;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("O(%s, %.2f, %s)", center, radius, material);
+    }
 }

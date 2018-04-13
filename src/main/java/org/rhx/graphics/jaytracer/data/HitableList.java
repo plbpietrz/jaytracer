@@ -1,6 +1,7 @@
-package org.rhx.graphics.jaytracer;
+package org.rhx.graphics.jaytracer.data;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class HitableList implements Hitable {
 
@@ -26,5 +27,21 @@ public class HitableList implements Hitable {
             }
         }
         return rec;
+    }
+
+    @Override
+    public Material getMaterial() {
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "@(%s)",
+                hitables.stream()
+                        .collect(
+                                Collectors.groupingBy(
+                                        h -> h.getMaterial().getClass().getSimpleName(),
+                                        Collectors.counting())));
     }
 }

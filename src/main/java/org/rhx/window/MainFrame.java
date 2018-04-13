@@ -3,7 +3,9 @@ package org.rhx.window;
 import org.rhx.graphics.jaytracer.Jaytracer;
 
 import javax.swing.*;
+import javax.swing.event.MouseInputListener;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -31,22 +33,59 @@ public class MainFrame {
         final Renderer renderer = new Jaytracer();
 
         DrawFramePanel panel = new DrawFramePanel(frame);
+
         frame.add(panel);
 
-
         resizeWindowToFitContent(frame);
+
+        final RenderLoop renderLoop = initRenderThread(frame, renderer, panel);
+
+        initFPSThread(frame, renderLoop);
+
+        panel.addMouseListener(new MouseInputListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                ((Jaytracer) renderer).drawPixelOn(panel, x, height - y);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+
+            @Override
+            public void mouseDragged(MouseEvent e) {}
+
+            @Override
+            public void mouseMoved(MouseEvent e) {}
+        });
+    }
+
+    private static RenderLoop initRenderThread(JFrame frame, Renderer renderer, DrawFramePanel panel) {
         final RenderLoop renderLoop = new RenderLoop();
         renderLoop.setDrawableSurface(panel);
         renderLoop.setRenderer(renderer);
         renderLoop.setDisplay(frame);
-        renderLoop.setMaxFPS(60);
+        renderLoop.setMaxFPS(0);
         new Thread(renderLoop).start();
+        return renderLoop;
+    }
 
+    private static void initFPSThread(JFrame frame, RenderLoop renderLoop) {
         new Thread(() -> {
             try {
                 while (true) {
                     frame.setTitle(SOFTWARE_RENDER_WINDOW + " FPS:" + renderLoop.getFrameCountAndReset());
-                    Thread.sleep(TimeUnit.SECONDS.toMillis(1l));
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(1L));
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

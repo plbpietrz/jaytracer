@@ -28,7 +28,12 @@ public class Jaytracer implements Renderer {
         Dimension dimension = drawable.getDimension();
         scrWidth = dimension.width;
         scrHeight = dimension.height;
-        camera = new Camera();
+        camera = new Camera(
+                Vec3.of(-1.5f, 1.5f, .7f),
+                Vec3.of(0f, 0f, -1f),
+                Vec3.of(0f, 1f, 0f),
+                60, (float)scrWidth/(float)scrHeight
+        );
     }
 
     @Override

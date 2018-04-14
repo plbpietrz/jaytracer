@@ -64,13 +64,13 @@ public class Vec3 {
         return new Vec3(e0, e1, e2);
     }
 
-    public static Vec3 add(final Vec3 v0, final Vec3 v1) {
-        return new Vec3(v0.e0 + v1.e0, v0.e1 + v1.e1, v0.e2 + v1.e2);
+    public static Vec3 add(final Vec3 u, final Vec3 v) {
+        return new Vec3(u.e0 + v.e0, u.e1 + v.e1, u.e2 + v.e2);
     }
 
-    public static Vec3 add(final Vec3 ... vs) {
+    public static Vec3 add(final Vec3 ... us) {
         float e0 = 0.0f, e1 = 0.0f, e2 = 0.0f;
-        for (Vec3 v : vs) {
+        for (Vec3 v : us) {
             e0 += v.e0;
             e1 += v.e1;
             e2 += v.e2;
@@ -78,17 +78,27 @@ public class Vec3 {
         return new Vec3(e0, e1, e2);
     }
 
-    public static Vec3 sub(final Vec3 v0, final Vec3 v1) {
-        return new Vec3(v0.e0 - v1.e0, v0.e1 - v1.e1, v0.e2 - v1.e2);
+    public static Vec3 sub(final Vec3 u, final Vec3 v) {
+        return new Vec3(u.e0 - v.e0, u.e1 - v.e1, u.e2 - v.e2);
     }
 
-    public static Vec3 mul(final Vec3 v0, final Vec3 v1) {
-        return new Vec3(v0.e0 * v1.e0, v0.e1 * v1.e1, v0.e2 * v1.e2);
+    public static Vec3 sub(final Vec3 u, final Vec3 ... us) {
+        float e0 = u.e0, e1 = u.e1, e2 = u.e2;
+        for (Vec3 v : us) {
+            e0 -= v.e0;
+            e1 -= v.e1;
+            e2 -= v.e2;
+        }
+        return new Vec3(e0, e1, e2);
     }
 
-    public static Vec3 mul(final Vec3 ... vs) {
+    public static Vec3 mul(final Vec3 u, final Vec3 v) {
+        return new Vec3(u.e0 * v.e0, u.e1 * v.e1, u.e2 * v.e2);
+    }
+
+    public static Vec3 mul(final Vec3 ... us) {
         float e0 = 1f, e1 = 1f, e2 = 1f;
-        for (Vec3 v : vs) {
+        for (Vec3 v : us) {
             e0 *= v.e0;
             e1 *= v.e1;
             e2 *= v.e2;
@@ -96,40 +106,44 @@ public class Vec3 {
         return new Vec3(e0, e1, e2);
     }
 
-    public static Vec3 div(final Vec3 v0, final Vec3 v1) {
-        return new Vec3(v0.e0 / v1.e0, v0.e1 / v1.e1, v0.e2 / v1.e2);
+    public static Vec3 div(final Vec3 u, final Vec3 v) {
+        return new Vec3(u.e0 / v.e0, u.e1 / v.e1, u.e2 / v.e2);
     }
 
-    public static Vec3 mul(final float t, final Vec3 v0) {
-        return new Vec3(v0.e0 * t, v0.e1 * t, v0.e2 * t);
+    public static Vec3 mul(final float t, final Vec3 u) {
+        return new Vec3(u.e0 * t, u.e1 * t, u.e2 * t);
     }
 
-    public static Vec3 mul(final float t, final Vec3 ... vs) {
-        return mul(t, mul(vs));
+    public static Vec3 mul(final float t, final Vec3 ... us) {
+        return mul(t, mul(us));
     }
 
-    public static Vec3 div(final Vec3 v0, final float v1) {
-        return new Vec3(v0.e0 / v1, v0.e1 / v1, v0.e2 / v1);
+    public static Vec3 div(final Vec3 u, final float v) {
+        return new Vec3(u.e0 / v, u.e1 / v, u.e2 / v);
     }
 
-    public static float len(final Vec3 v0) {
-        return (float) sqrt(v0.e0 * v0.e0 + v0.e1 * v0.e1 + v0.e2 * v0.e2);
+    public static float len(final Vec3 u) {
+        return (float) sqrt(u.e0 * u.e0 + u.e1 * u.e1 + u.e2 * u.e2);
     }
 
-    public static float len_sq(final Vec3 v0) {
-        return v0.e0 * v0.e0 + v0.e1 * v0.e1 + v0.e2 * v0.e2;
+    public static float len_sq(final Vec3 u) {
+        return u.e0 * u.e0 + u.e1 * u.e1 + u.e2 * u.e2;
     }
 
-    public static Vec3 unit(final Vec3 v0) {
-        return div(v0, len(v0));
+    public static Vec3 unit(final Vec3 u) {
+        return div(u, len(u));
     }
 
-    public static float dot(final Vec3 v0, final Vec3 o) {
-        return v0.e0*o.e0 + v0.e1*o.e1 + v0.e2*o.e2;
+    public static float dot(final Vec3 u, final Vec3 v) {
+        return u.e0*v.e0 + u.e1*v.e1 + u.e2*v.e2;
     }
 
-    public static Vec3 cross(final Vec3 v0, final Vec3 v1) {
-        throw new UnsupportedOperationException();
+    public static Vec3 cross(final Vec3 u, final Vec3 v) {
+        return Vec3.of(
+                u.e1*v.e2 - u.e2*v.e1,
+                u.e2*v.e0 - u.e0*v.e2,
+                u.e0*v.e1 - u.e1*v.e0
+        );
     }
 
     public static Vec3 neg(Vec3 v) {

@@ -5,16 +5,23 @@ import org.rhx.graphics.jaytracer.data.Vec3;
 
 public class Camera {
 
-    public Vec3 origin;
-    public Vec3 lowerLeftCorner;
-    public Vec3 horizontal;
-    public Vec3 vertical;
+    public final Vec3 origin;
+    public final Vec3 lowerLeftCorner;
+    public final Vec3 horizontal;
+    public final Vec3 vertical;
 
-    public Camera() {
-        lowerLeftCorner = Vec3.of(-2f, -1f, -1f);
-        horizontal      = Vec3.of(4f, 0f, 0f);
-        vertical        = Vec3.of(0f, 2f, 0f);
-        origin          = Vec3.of(0f, 0f, 0f);
+    public Camera(Vec3 lookFrom, Vec3 lookAt, Vec3 vup, float vfov, float aspect) {
+        double theta = vfov * Math.PI / 180;
+        float halfHeight = (float) Math.tan(theta / 2d);
+        float halfWidth = aspect * halfHeight;
+        Vec3 w = Vec3.unit(Vec3.sub(lookFrom, lookAt));
+        Vec3 u = Vec3.unit(Vec3.cross(vup, w));
+        Vec3 v = Vec3.cross(w, u);
+
+        origin = lookFrom;
+        lowerLeftCorner = Vec3.sub(origin, Vec3.mul(halfWidth, u), Vec3.mul(halfHeight, v), w);
+        horizontal      = Vec3.mul(2f * halfWidth, u);
+        vertical        = Vec3.mul(2f * halfHeight, v);
     }
 
     public Ray getRay(float u, float v) {

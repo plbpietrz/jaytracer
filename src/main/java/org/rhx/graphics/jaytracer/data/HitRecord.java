@@ -5,17 +5,17 @@ public class HitRecord {
     /**
      * Distance from the screen
      */
-    public final float t;
+    final float t;
 
     /**
      * Point of impact
      */
-    public final Vec3 pnt;
+    final Vec3 pnt;
 
     /**
      * Surface normal vector at the impact point pnt and distance t
      */
-    public final Vec3 norm;
+    final Vec3 norm;
 
     /**
      * Material definition at the impact point

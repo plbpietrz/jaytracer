@@ -11,6 +11,10 @@ public class Vec3 {
 
     private static final Random rand = new Random(System.currentTimeMillis());
 
+    public static Vec3 ZERO = Vec3.of(0.0f, 0.0f, 0.0f);
+
+    public static Vec3 ONES = Vec3.of(1.0f, 1.0f, 1.0f);
+
     private final float e0;
     private final float e1;
     private final float e2;
@@ -119,7 +123,12 @@ public class Vec3 {
         return (float) sqrt(u.e0 * u.e0 + u.e1 * u.e1 + u.e2 * u.e2);
     }
 
-    public static float len_sq(final Vec3 u) {
+    /**
+     * Length squared.
+     * @param u
+     * @return
+     */
+    public static float lensq(final Vec3 u) {
         return u.e0 * u.e0 + u.e1 * u.e1 + u.e2 * u.e2;
     }
 
@@ -139,7 +148,7 @@ public class Vec3 {
         );
     }
 
-    public static Vec3 neg(Vec3 v) {
+    public static Vec3 neg(final Vec3 v) {
         return Vec3.of(-v.e0, -v.e1, -v.e2);
     }
 
@@ -147,15 +156,12 @@ public class Vec3 {
      * Random vector in unit radius sphere.
      * @return {@link Vec3}
      */
-    public static Vec3 randInUnitSph() {
+    public static Vec3 rvius() {
         Vec3 p;
         do {
             p = Vec3.sub(Vec3.mul(2f, Vec3.of(rand.nextFloat(), rand.nextFloat(), rand.nextFloat())), Vec3.ONES);
-        } while (Vec3.len_sq(p) >= 1f);
+        } while (Vec3.lensq(p) >= 1f);
         return p;
     }
 
-    public static Vec3 ZERO = Vec3.of(0.0f, 0.0f, 0.0f);
-
-    public static Vec3 ONES = Vec3.of(1.0f, 1.0f, 1.0f);
 }

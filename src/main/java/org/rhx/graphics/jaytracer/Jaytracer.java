@@ -21,7 +21,7 @@ public class Jaytracer implements Renderer {
     private int scrWidth, scrHeight;
     private Random rand = new Random(System.currentTimeMillis());
     private Camera camera;
-    private int ns = 10;
+    private int ns = 100;
 
     @Override
     public void init(Drawable drawable) {
@@ -35,7 +35,7 @@ public class Jaytracer implements Renderer {
                 lookAt,
                 Vec3.of(0f, 1f, 0f),
                 20, (float)scrWidth/(float)scrHeight,
-                0f, Vec3.len(Vec3.sub(lookFrom, lookAt))
+                .05f, Vec3.len(Vec3.sub(lookFrom, lookAt))
         );
     }
 
@@ -110,8 +110,8 @@ public class Jaytracer implements Renderer {
     private Vec3 color(Ray ray, Hitable world, int depth) {
         HitRecord rec = world.hit(ray, .001f, Float.MAX_VALUE);
         if (rec != null) {
-            Out<Ray> scattered = Out.empty();
-            Out<Vec3> attenuation = Out.empty();
+            Ref<Ray> scattered = Ref.empty();
+            Ref<Vec3> attenuation = Ref.empty();
 
             if (depth < 50 && rec.mat.scatter(ray, rec, attenuation, scattered)) {
                 return Vec3.mul(attenuation.get(), color(scattered.get(), world, depth + 1));

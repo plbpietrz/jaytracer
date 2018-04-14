@@ -1,18 +1,22 @@
 package org.rhx.graphics.jaytracer;
 
-public class Out<T> {
+/**
+ * C++ reference ;-)
+ * @param <T>
+ */
+public class Ref<T> {
     private T ref;
 
-    private Out(T ref) {
+    private Ref(T ref) {
         this.ref = ref;
     }
 
-    public static <T> Out<T> of (T ref) {
-        return new Out<>(ref);
+    public static <T> Ref<T> of (T ref) {
+        return new Ref<>(ref);
     }
 
-    public static <T> Out<T> empty() {
-        return new Out<>(null);
+    public static <T> Ref<T> empty() {
+        return new Ref<>(null);
     }
 
     public T get() {

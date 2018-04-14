@@ -10,9 +10,9 @@ import static org.rhx.graphics.jaytracer.data.Vec3.*;
  */
 public class Sphere implements Hitable {
 
-    public final Vec3 center;
-    public final float radius;
-    public final Material material;
+    final Vec3 center;
+    final float radius;
+    final Material material;
 
 
     private Sphere(Vec3 center, float radius, final Material material) {

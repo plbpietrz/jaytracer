@@ -1,7 +1,11 @@
 package org.rhx.graphics.jaytracer.data;
 
-import org.rhx.graphics.jaytracer.Out;
+import org.rhx.graphics.jaytracer.Ref;
 
+/**
+ * Metal material definition. Will bounce the {@link Ray} in a defined way, with a small variance base on the
+ * fuzz parameter.
+ */
 public class Metal implements Material {
 
     private final Vec3 albedo;
@@ -13,9 +17,9 @@ public class Metal implements Material {
     }
 
     @Override
-    public boolean scatter(Ray rayIn, HitRecord rec, Out<Vec3> attenuation, Out<Ray> scattered) {
+    public boolean scatter(Ray rayIn, HitRecord rec, Ref<Vec3> attenuation, Ref<Ray> scattered) {
         Vec3 reflected = reflect(Vec3.unit(rayIn.dir), rec.norm);
-        scattered.set(Ray.of(rec.pnt, Vec3.add(reflected, Vec3.mul(fuzz, Vec3.randInUnitSph()))));
+        scattered.set(Ray.of(rec.pnt, Vec3.add(reflected, Vec3.mul(fuzz, Vec3.rvius()))));
         attenuation.set(albedo);
         return Vec3.dot(scattered.get().dir, rec.norm) > 0;
     }
@@ -24,7 +28,7 @@ public class Metal implements Material {
         return Vec3.sub(v, Vec3.mul(2f * Vec3.dot(v, n), n));
     }
 
-    public static Metal of(final Vec3 albedo, final float fuzz) {
+    public static Metal of(Vec3 albedo, float fuzz) {
         return new Metal(albedo, fuzz);
     }
 

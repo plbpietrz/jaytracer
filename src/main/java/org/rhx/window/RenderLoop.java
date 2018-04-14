@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class RenderLoop implements Render, Runnable {
 
     private static final int NOT_SET = -1;
-    public static final int ONE_SECOND = 1000;
+    private static final int ONE_SECOND = 1000;
 
     private int maxFps = NOT_SET, frameCount;
     private boolean renderFlag = true;
@@ -88,14 +88,4 @@ public class RenderLoop implements Render, Runnable {
         return this;
     }
 
-    /**
-     * Return the number of frames generated from the beginning of the render loop start or the last execution of
-     * this method.
-     * @return number of frames from last execution of this method
-     */
-    public int getFrameCountAndReset() {
-        int tmp = frameCount;
-        frameCount = 0;
-        return tmp;
-    }
 }

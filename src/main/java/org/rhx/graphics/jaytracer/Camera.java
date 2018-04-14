@@ -3,6 +3,9 @@ package org.rhx.graphics.jaytracer;
 import org.rhx.graphics.jaytracer.data.Ray;
 import org.rhx.graphics.jaytracer.data.Vec3;
 
+/**
+ * Camera object with adjustable position, filed of view and focus.
+ */
 public class Camera {
 
     private final Vec3 origin;
@@ -13,7 +16,6 @@ public class Camera {
     private final float lensRadius;
 
     private Camera(Vec3 lookFrom, Vec3 lookAt, Vec3 vup, float vfov, float aspect, float aperture, float focusDist) {
-        lensRadius = aperture / 2f;
         double theta = vfov * Math.PI / 180;
         float halfHeight = (float) Math.tan(theta / 2d);
         float halfWidth = aspect * halfHeight;
@@ -26,10 +28,17 @@ public class Camera {
         lowerLeftCorner = Vec3.sub(origin, Vec3.mul(halfWidth * focusDist, u), Vec3.mul(halfHeight * focusDist, v), Vec3.mul(focusDist, w));
         horizontal      = Vec3.mul(2f * halfWidth * focusDist, u);
         vertical        = Vec3.mul(2f * halfHeight * focusDist, v);
+        lensRadius      = aperture / 2f;
     }
 
+    /**
+     * Get the ray at the given camera far plane coordinates.
+     * @param s
+     * @param t
+     * @return
+     */
     public Ray getRay(float s, float t) {
-        Vec3 rd = Vec3.mul(lensRadius, Vec3.randInUnitSph());
+        Vec3 rd = Vec3.mul(lensRadius, Vec3.rvius());
         Vec3 offset = Vec3.add(Vec3.mul(rd.x(), u), Vec3.mul(rd.y(), v));
         return Ray.of(
                 Vec3.add(origin, offset),
@@ -41,6 +50,17 @@ public class Camera {
                         Vec3.neg(offset)));
     }
 
+    /**
+     * Factory method for {@linke Camera} object.
+     * @param lookFrom camera origin position
+     * @param lookAt camera target point
+     * @param vup vertical up vector
+     * @param vfov vertical field of view
+     * @param aspect aspect ration
+     * @param aperture camera aperture (0 - absolute focus, > 0 selective focus)
+     * @param focusDist focus distance
+     * @return {@linke Camera} instance
+     */
     public static Camera of(Vec3 lookFrom, Vec3 lookAt, Vec3 vup, float vfov, float aspect, float aperture, float focusDist) {
         return new Camera(
                 lookFrom, lookAt, vup,

@@ -3,9 +3,12 @@ package org.rhx.graphics.jaytracer.data;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * Primitive container for the
+ */
 public class HitableList implements Hitable {
 
-    public final Collection<Hitable> hitables;
+    private final Collection<Hitable> hitables;
 
     private HitableList(Collection<Hitable> hitables) {
         this.hitables = hitables;

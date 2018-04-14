@@ -12,7 +12,7 @@ public class RenderLoop implements Render, Runnable {
     private static final int NOT_SET = -1;
     private static final int ONE_SECOND = 1000;
 
-    private int maxFps = NOT_SET, frameCount;
+    private int maxFps = NOT_SET;
     private boolean renderFlag = true;
 
     private Renderer renderer;
@@ -50,7 +50,6 @@ public class RenderLoop implements Render, Runnable {
     @Override
     public void render() {
         renderer.drawOn(surface);
-        frameCount += 1;
         display.repaint();
     }
 

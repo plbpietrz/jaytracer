@@ -15,8 +15,8 @@ public class Camera {
     private final Vec3 u, v, w;
     private final float lensRadius;
 
-    private Camera(Vec3 lookFrom, Vec3 lookAt, Vec3 vup, float vfov, float aspect, float aperture, float focusDist) {
-        double theta = vfov * Math.PI / 180;
+    private Camera(Vec3 lookFrom, Vec3 lookAt, Vec3 vup, float vFov, float aspect, float aperture, float focusDist) {
+        double theta = vFov * Math.PI / 180;
         float halfHeight = (float) Math.tan(theta / 2d);
         float halfWidth = aspect * halfHeight;
 
@@ -25,7 +25,12 @@ public class Camera {
         v = Vec3.cross(w, u);
 
         origin          = lookFrom;
-        lowerLeftCorner = Vec3.sub(origin, Vec3.mul(halfWidth * focusDist, u), Vec3.mul(halfHeight * focusDist, v), Vec3.mul(focusDist, w));
+        lowerLeftCorner = Vec3.sub(
+                origin,
+                Vec3.mul(halfWidth * focusDist, u),
+                Vec3.mul(halfHeight * focusDist, v),
+                Vec3.mul(focusDist, w)
+        );
         horizontal      = Vec3.mul(2f * halfWidth * focusDist, u);
         vertical        = Vec3.mul(2f * halfHeight * focusDist, v);
         lensRadius      = aperture / 2f;
@@ -55,16 +60,16 @@ public class Camera {
      * @param lookFrom camera origin position
      * @param lookAt camera target point
      * @param vup vertical up vector
-     * @param vfov vertical field of view
+     * @param vFov vertical field of view
      * @param aspect aspect ration
      * @param aperture camera aperture (0 - absolute focus, > 0 selective focus)
      * @param focusDist focus distance
      * @return {@linke Camera} instance
      */
-    public static Camera of(Vec3 lookFrom, Vec3 lookAt, Vec3 vup, float vfov, float aspect, float aperture, float focusDist) {
+    public static Camera of(Vec3 lookFrom, Vec3 lookAt, Vec3 vup, float vFov, float aspect, float aperture, float focusDist) {
         return new Camera(
                 lookFrom, lookAt, vup,
-                vfov, aspect,
+                vFov, aspect,
                 aperture, focusDist);
     }
 }

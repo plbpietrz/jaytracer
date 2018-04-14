@@ -21,18 +21,21 @@ public class Jaytracer implements Renderer {
     private int scrWidth, scrHeight;
     private Random rand = new Random(System.currentTimeMillis());
     private Camera camera;
-    private int ns = 100;
+    private int ns = 10;
 
     @Override
     public void init(Drawable drawable) {
         Dimension dimension = drawable.getDimension();
         scrWidth = dimension.width;
         scrHeight = dimension.height;
-        camera = new Camera(
-                Vec3.of(-1.5f, 1.5f, .7f),
-                Vec3.of(0f, 0f, -1f),
+        Vec3 lookFrom = Vec3.of(3f, 3f, 2f);
+        Vec3 lookAt = Vec3.of(0f, 0f, -1f);
+        camera = Camera.of(
+                lookFrom,
+                lookAt,
                 Vec3.of(0f, 1f, 0f),
-                60, (float)scrWidth/(float)scrHeight
+                20, (float)scrWidth/(float)scrHeight,
+                0f, Vec3.len(Vec3.sub(lookFrom, lookAt))
         );
     }
 

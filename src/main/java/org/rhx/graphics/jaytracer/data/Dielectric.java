@@ -8,6 +8,7 @@ public class Dielectric implements Material {
 
     private static final Random rand = new Random(System.currentTimeMillis());
 
+    /** Refraction index */
     private final float refIdx;
 
     private Dielectric(final float refIdx) {

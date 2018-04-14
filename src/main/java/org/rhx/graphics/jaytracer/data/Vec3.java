@@ -21,13 +21,6 @@ public class Vec3 {
         this.e2 = e2;
     }
 
-    public static class Color extends Vec3 {
-
-        private Color(float e0, float e1, float e2) {
-            super(e0, e1, e2);
-        }
-    }
-
     public float x() {
         return e0;
     }

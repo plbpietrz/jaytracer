@@ -11,8 +11,9 @@ public interface Renderer {
 
     /**
      * Draw operation.
-     * @param drawable {@link Drawable} surface on which we will draw.
      */
-    void drawOn(Drawable drawable);
+    void draw();
+
+    Stats getStats();
 
 }

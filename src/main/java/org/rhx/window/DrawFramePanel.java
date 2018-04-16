@@ -25,7 +25,7 @@ public class DrawFramePanel extends JPanel implements Drawable {
     public DrawFramePanel(final int width, final int height) {
         final int[] dstBuffer = new int[width * height];
         WritableRaster raster = Raster.createPackedRaster(
-                new DataBufferInt(dstBuffer, width * height),  // data buffer
+                new DataBufferInt(dstBuffer, width * height),  // model buffer
                 width, height,                                      // dimensions
                 width,                                          // scanline stride (image width times values per pixel)
                 new int[]{RED, GREEN, BLUE}, null);         // band mask

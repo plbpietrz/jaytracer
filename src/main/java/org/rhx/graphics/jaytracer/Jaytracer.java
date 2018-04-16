@@ -1,8 +1,16 @@
 package org.rhx.graphics.jaytracer;
 
-import org.rhx.graphics.jaytracer.data.*;
+import org.rhx.graphics.jaytracer.model.Hitable;
+import org.rhx.graphics.jaytracer.model.HitableList;
+import org.rhx.graphics.jaytracer.model.Ray;
+import org.rhx.graphics.jaytracer.model.Vec3;
+import org.rhx.graphics.jaytracer.model.material.Dielectric;
+import org.rhx.graphics.jaytracer.model.material.Lambertian;
+import org.rhx.graphics.jaytracer.model.material.Metal;
+import org.rhx.graphics.jaytracer.model.util.HitRecord;
 import org.rhx.window.Drawable;
 import org.rhx.window.Renderer;
+import org.rhx.window.Stats;
 
 import java.awt.*;
 import java.awt.image.DataBufferInt;
@@ -11,40 +19,51 @@ import java.util.List;
 import java.util.Random;
 
 import static java.lang.Math.sqrt;
-import static org.rhx.graphics.jaytracer.data.Vec3.*;
+import static org.rhx.graphics.jaytracer.model.Vec3.*;
 
 /**
  * Jaytracer main class.
  */
 public class Jaytracer implements Renderer {
 
+
+    private Drawable drawable;
     private int scrWidth, scrHeight;
-    private Random rand = new Random(System.currentTimeMillis());
+
+    private Random rand;
     private Camera camera;
-    private int ns = 100;
+
+    private volatile int nrOfPixelDone = 0;
+
+    private int nrOfSamplesPerPixel;
+
+    public Jaytracer(int nrOfSamplesPerPixel) {
+        this.nrOfSamplesPerPixel = nrOfSamplesPerPixel;
+        this.rand = new Random(System.currentTimeMillis());
+    }
 
     @Override
     public void init(Drawable drawable) {
+        this.drawable = drawable;
         Dimension dimension = drawable.getDimension();
         scrWidth = dimension.width;
         scrHeight = dimension.height;
+
         Vec3 lookFrom = Vec3.of(12f, 2f, 2f);
         Vec3 lookAt = Vec3.of(-8f, -1f, 1f);
+
         camera = Camera.of(
                 lookFrom,
                 lookAt,
                 Vec3.of(0f, 1f, 0f),
                 20, (float)scrWidth/(float)scrHeight,
-                .1f, Vec3.len(Vec3.sub(lookFrom, lookAt))
+                .05f, Vec3.len(Vec3.sub(lookFrom, lookAt))
         );
     }
 
     @Override
-    public void drawOn(Drawable drawable) {
+    public void draw() {
         long start = System.currentTimeMillis();
-
-        int nx = scrWidth;
-        int ny = scrHeight;
 
         DataBufferInt dataBuffer = (DataBufferInt) drawable.getDrawableRaster().getDataBuffer();
         int[] offScreenRaster = dataBuffer.getData();
@@ -52,25 +71,35 @@ public class Jaytracer implements Renderer {
 
         HitableList world = getSceneData();
 
-        for (int j = ny - 1; j >= 0; j--) {
-            for (int i = 0; i < nx; i++) {
-                renderPoint(nx, ny, offScreenRaster, world, i, j, false);
+        for (int j = scrHeight - 1; j >= 0; j--) {
+            for (int i = 0; i < scrWidth; i++) {
+                renderPoint(scrWidth, scrHeight, offScreenRaster, world, i, j, false);
+                nrOfPixelDone = (scrHeight - j) * scrWidth + i;
             }
         }
 
         System.out.println(String.format("Frame time is %d[ms]", System.currentTimeMillis() - start));
     }
 
+    @Override
+    public Stats getStats() {
+        if (scrHeight == 0 || scrHeight == 0) {
+            return new Stats(0, 1);
+        } else {
+            return new Stats(nrOfPixelDone + 1, scrWidth * scrHeight);
+        }
+    }
+
     private void renderPoint(int nx, int ny, int[] offScreenRaster, HitableList world, int i, int j, boolean debug) {
         Vec3 color = Vec3.ZERO;
-        for (int s = 0; s < ns; ++s) {
+        for (int s = 0; s < nrOfSamplesPerPixel; ++s) {
             float u = (i + rand.nextFloat())/(float)nx;
             float v = (j + rand.nextFloat())/(float)ny;
             Ray r = camera.getRay(u, v);
             Ray.pap(2f, r);
             color = Vec3.add(color, color(r, world, 0));
         }
-        color = Vec3.div(color, (float)ns);
+        color = Vec3.div(color, (float) nrOfSamplesPerPixel);
 
         color = Vec3.of(sqrt(color.r()),sqrt(color.g()),sqrt(color.b()));
 
@@ -83,7 +112,7 @@ public class Jaytracer implements Renderer {
         offScreenRaster[(ny - j -1) * nx + i] = ic;
     }
 
-    public void drawPixelOn(Drawable drawable, int i, int j) {
+    public void drawPixelOn(int i, int j) {
         long start = System.currentTimeMillis();
 
         DataBufferInt dataBuffer = (DataBufferInt) drawable.getDrawableRaster().getDataBuffer();
@@ -99,13 +128,6 @@ public class Jaytracer implements Renderer {
 
     private HitableList getSceneData() {
         List<Hitable> hitables = new ArrayList<>();
-//        hitables.add(Sphere.of(Vec3.of(0f, 0f, -1f),.5f, Lambertian.of(Vec3.of(.1f, .2f, .5f))));
-//        hitables.add(Sphere.of(Vec3.of(0f, -100.5f, -1f),100f, Lambertian.of(Vec3.of(.8f, .8f, 0f))));
-//        hitables.add(Sphere.of(Vec3.of(1f, 0f, -1f),.5f, Metal.of(Vec3.of(.8f, .6f, .2f), .1f)));
-//        hitables.add(Sphere.of(Vec3.of(-1f, 0f, -1f),.5f, Dielectric.of(1.5f)));
-//        hitables.add(Sphere.of(Vec3.of(-1f, 0f, -1f),-.45f, Dielectric.of(1.5f)));
-
-        int n = 500;
         hitables.add(Sphere.of(Vec3.of(0f, -1000f, 0f),1000f, Lambertian.of(Vec3.of(.5f, .5f, .5f))));
         for (int a = -11; a < 11; ++a) {
             for (int b = -11; b < 11; ++b) {
@@ -137,9 +159,9 @@ public class Jaytracer implements Renderer {
                 }
             }
         }
-        hitables.add(Sphere.of(Vec3.of(0f, 1f, 0f),1f, Dielectric.of(1.5f)));
+        hitables.add(Sphere.of(Vec3.of(4f, 1f, 0f),1f, Dielectric.of(1.5f)));
         hitables.add(Sphere.of(Vec3.of(-4f, 1f, 0f),1f, Lambertian.of(Vec3.of(.4f, .2f, .1f))));
-        hitables.add(Sphere.of(Vec3.of(4f, 1f, 0f),1f, Metal.of(Vec3.of(.7f, .6f, .5f), 0f)));
+        hitables.add(Sphere.of(Vec3.of(0f, 1f, 0f),1f, Metal.of(Vec3.of(.7f, .6f, .5f), 0f)));
 
         return HitableList.of(hitables);
     }

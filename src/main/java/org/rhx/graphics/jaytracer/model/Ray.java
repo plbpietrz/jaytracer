@@ -1,7 +1,7 @@
-package org.rhx.graphics.jaytracer.data;
+package org.rhx.graphics.jaytracer.model;
 
-import static org.rhx.graphics.jaytracer.data.Vec3.add;
-import static org.rhx.graphics.jaytracer.data.Vec3.mul;
+import static org.rhx.graphics.jaytracer.model.Vec3.add;
+import static org.rhx.graphics.jaytracer.model.Vec3.mul;
 
 /**
  * Ray object represents probing entity that is shot from the camera

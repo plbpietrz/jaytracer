@@ -1,21 +1,24 @@
-package org.rhx.graphics.jaytracer.data;
+package org.rhx.graphics.jaytracer.model.util;
+
+import org.rhx.graphics.jaytracer.model.Vec3;
+import org.rhx.graphics.jaytracer.model.material.Material;
 
 public class HitRecord {
 
     /**
      * Distance from the screen
      */
-    final float t;
+    public final float t;
 
     /**
      * Point of impact
      */
-    final Vec3 pnt;
+    public final Vec3 pnt;
 
     /**
      * Surface normal vector at the impact point pnt and distance t
      */
-    final Vec3 norm;
+    public final Vec3 norm;
 
     /**
      * Material definition at the impact point

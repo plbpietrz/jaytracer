@@ -1,6 +1,9 @@
-package org.rhx.graphics.jaytracer.data;
+package org.rhx.graphics.jaytracer.model.material;
 
 import org.rhx.graphics.jaytracer.Ref;
+import org.rhx.graphics.jaytracer.model.Ray;
+import org.rhx.graphics.jaytracer.model.Vec3;
+import org.rhx.graphics.jaytracer.model.util.HitRecord;
 
 /**
  * Lambertian material definition. Scatters {@link Ray}s in random directions modifying them with its diffuse color.

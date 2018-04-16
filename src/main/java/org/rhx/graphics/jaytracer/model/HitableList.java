@@ -1,6 +1,9 @@
-package org.rhx.graphics.jaytracer.data;
+package org.rhx.graphics.jaytracer.model;
 
-import java.util.Collection;
+import org.rhx.graphics.jaytracer.model.material.Material;
+import org.rhx.graphics.jaytracer.model.util.HitRecord;
+
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -8,13 +11,13 @@ import java.util.stream.Collectors;
  */
 public class HitableList implements Hitable {
 
-    private final Collection<Hitable> hitables;
+    private final List<Hitable> hitables;
 
-    private HitableList(Collection<Hitable> hitables) {
+    private HitableList(List<Hitable> hitables) {
         this.hitables = hitables;
     }
 
-    public static HitableList of(Collection<Hitable> hitables) {
+    public static HitableList of(List<Hitable> hitables) {
         return new HitableList(hitables);
     }
 
@@ -22,8 +25,8 @@ public class HitableList implements Hitable {
     public HitRecord hit(Ray ray, float tMin, float tMax) {
         HitRecord rec = null;
         float closestSoFar = tMax;
-        for (Hitable hitable : hitables) {
-            HitRecord tempRec = hitable.hit(ray, tMin, closestSoFar);
+        for (int idx = 0; idx < hitables.size(); ++idx) {
+            HitRecord tempRec = hitables.get(idx).hit(ray, tMin, closestSoFar);
             if (tempRec != null) {
                 closestSoFar = tempRec.t;
                 rec = tempRec;

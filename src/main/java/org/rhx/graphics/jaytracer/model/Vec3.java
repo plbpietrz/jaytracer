@@ -1,4 +1,4 @@
-package org.rhx.graphics.jaytracer.data;
+package org.rhx.graphics.jaytracer.model;
 
 import java.util.Random;
 
@@ -11,9 +11,9 @@ public class Vec3 {
 
     private static final Random rand = new Random(System.currentTimeMillis());
 
-    public static Vec3 ZERO = Vec3.of(0.0f, 0.0f, 0.0f);
+    public static Vec3 ZERO = new Vec3(0.0f, 0.0f, 0.0f);
 
-    public static Vec3 ONES = Vec3.of(1.0f, 1.0f, 1.0f);
+    public static Vec3 ONES = new Vec3(1.0f, 1.0f, 1.0f);
 
     private final float e0;
     private final float e1;
@@ -116,7 +116,8 @@ public class Vec3 {
     }
 
     public static Vec3 div(final Vec3 u, final float v) {
-        return new Vec3(u.e0 / v, u.e1 / v, u.e2 / v);
+        float oneOverV = 1 / v;
+        return new Vec3(u.e0 * oneOverV, u.e1 * oneOverV, u.e2 * oneOverV);
     }
 
     public static float len(final Vec3 u) {
@@ -137,31 +138,41 @@ public class Vec3 {
     }
 
     public static float dot(final Vec3 u, final Vec3 v) {
-        return u.e0*v.e0 + u.e1*v.e1 + u.e2*v.e2;
+        return u.e0 * v.e0 + u.e1 * v.e1 + u.e2 * v.e2;
     }
 
     public static Vec3 cross(final Vec3 u, final Vec3 v) {
-        return Vec3.of(
-                u.e1*v.e2 - u.e2*v.e1,
-                u.e2*v.e0 - u.e0*v.e2,
-                u.e0*v.e1 - u.e1*v.e0
+        return new Vec3(
+                u.e1 * v.e2 - u.e2 * v.e1,
+                u.e2 * v.e0 - u.e0 * v.e2,
+                u.e0 * v.e1 - u.e1 * v.e0
         );
     }
 
     public static Vec3 neg(final Vec3 v) {
-        return Vec3.of(-v.e0, -v.e1, -v.e2);
+        return new Vec3(-v.e0, -v.e1, -v.e2);
     }
 
     /**
-     * Random vector in unit radius sphere.
+     * Random vector in unit radius sphere. Generate sphere of radius 2 and shift it by -ONES vector.
      * @return {@link Vec3}
      */
     public static Vec3 rvius() {
         Vec3 p;
         do {
-            p = Vec3.sub(Vec3.mul(2f, Vec3.of(rand.nextFloat(), rand.nextFloat(), rand.nextFloat())), Vec3.ONES);
+            p = new Vec3(2f * rand.nextFloat() - 1f, 2f * rand.nextFloat() - 1f, 2f * rand.nextFloat() - 1f);
         } while (Vec3.lensq(p) >= 1f);
         return p;
+    }
+
+    public static void main(String[] args) {
+        long start = System.currentTimeMillis();
+        Vec3 p = Vec3.ONES;
+        for (int i = 0; i < 10000000; ++i) {
+            p = Vec3.rvius();
+        }
+        System.out.println(String.format("time: %d", System.currentTimeMillis() - start));
+        System.out.println(p);
     }
 
 }

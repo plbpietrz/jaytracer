@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main frame class.
@@ -17,7 +17,7 @@ public class MainFrame {
     public static final int HEIGHT_PARAM = 1;
     public static final String TITLE = "Jaytracer";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         int width;
         int height;
         if (args.length == 2) {
@@ -29,7 +29,7 @@ public class MainFrame {
         }
 
         JFrame frame = buildFrame(width, height);
-        Renderer renderer = new Jaytracer();
+        Renderer renderer = new Jaytracer(1);
 
         DrawFramePanel panel = new DrawFramePanel(frame);
 
@@ -37,14 +37,29 @@ public class MainFrame {
 
         resizeWindowToFitContent(frame);
 
-        initRenderThread(frame, renderer, panel);
+        new Thread(() -> {
+            try {
+                int percent = 0;
+                while (percent != 100) {
+                    Stats stats = renderer.getStats();
+                    percent = (int) (((float) stats.done / (float) stats.max) * 100f);
+                    frame.setTitle(String.format("%s [%d%%]", TITLE, percent));
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(1L));
+                };
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
 
         panel.addMouseListener(new MouseInputListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int x = e.getX();
-                int y = e.getY();
-                ((Jaytracer) renderer).drawPixelOn(panel, x, height - y);
+//                int x = e.getX();
+//                int y = e.getY();
+//                ((Jaytracer) renderer).drawPixelOn(panel, x, height - y);
+                initRenderThread(frame, renderer, panel);
+
             }
 
             @Override

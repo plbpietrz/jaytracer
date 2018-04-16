@@ -1,7 +1,7 @@
 package org.rhx.graphics.jaytracer;
 
-import org.rhx.graphics.jaytracer.data.Ray;
-import org.rhx.graphics.jaytracer.data.Vec3;
+import org.rhx.graphics.jaytracer.model.Ray;
+import org.rhx.graphics.jaytracer.model.Vec3;
 
 /**
  * Camera object with adjustable position, filed of view and focus.
@@ -12,7 +12,7 @@ public class Camera {
     private final Vec3 lowerLeftCorner;
     private final Vec3 horizontal;
     private final Vec3 vertical;
-    private final Vec3 u, v, w;
+    private final Vec3 u, v;
     private final float lensRadius;
 
     private Camera(Vec3 lookFrom, Vec3 lookAt, Vec3 vup, float vFov, float aspect, float aperture, float focusDist) {
@@ -20,7 +20,7 @@ public class Camera {
         float halfHeight = (float) Math.tan(theta / 2d);
         float halfWidth = aspect * halfHeight;
 
-        w = Vec3.unit(Vec3.sub(lookFrom, lookAt));
+        Vec3 w = Vec3.unit(Vec3.sub(lookFrom, lookAt));
         u = Vec3.unit(Vec3.cross(vup, w));
         v = Vec3.cross(w, u);
 

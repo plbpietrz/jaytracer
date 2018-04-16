@@ -49,7 +49,7 @@ public class RenderLoop implements Render, Runnable {
 
     @Override
     public void render() {
-        renderer.drawOn(surface);
+        renderer.draw();
         display.repaint();
     }
 

@@ -1,4 +1,7 @@
-package org.rhx.graphics.jaytracer.data;
+package org.rhx.graphics.jaytracer.model;
+
+import org.rhx.graphics.jaytracer.model.material.Material;
+import org.rhx.graphics.jaytracer.model.util.HitRecord;
 
 /**
  * Basic geometry object type that can interact with {@link Ray}.

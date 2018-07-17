@@ -14,7 +14,6 @@ import org.rhx.window.Stats;
 
 import java.awt.*;
 import java.awt.image.DataBufferInt;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -27,6 +26,7 @@ import static org.rhx.graphics.jaytracer.model.Vec3.*;
 public class Jaytracer implements Renderer {
 
 
+    private final HitableList sceneDescription;
     private Drawable drawable;
     private int scrWidth, scrHeight;
 
@@ -36,10 +36,14 @@ public class Jaytracer implements Renderer {
     private volatile int nrOfPixelDone = 0;
 
     private int nrOfSamplesPerPixel;
+    private int currRaysDone;
+    private int lastRaysDone;
 
-    public Jaytracer(int nrOfSamplesPerPixel) {
+    public Jaytracer(int nrOfSamplesPerPixel, Camera camera, HitableList sceneDescription) {
         this.nrOfSamplesPerPixel = nrOfSamplesPerPixel;
         this.rand = new Random(System.currentTimeMillis());
+        this.sceneDescription = sceneDescription;
+        this.camera = camera;
     }
 
     @Override
@@ -48,17 +52,6 @@ public class Jaytracer implements Renderer {
         Dimension dimension = drawable.getDimension();
         scrWidth = dimension.width;
         scrHeight = dimension.height;
-
-        Vec3 lookFrom = Vec3.of(12f, 2f, 2f);
-        Vec3 lookAt = Vec3.of(-8f, -1f, 1f);
-
-        camera = Camera.of(
-                lookFrom,
-                lookAt,
-                Vec3.of(0f, 1f, 0f),
-                20, (float)scrWidth/(float)scrHeight,
-                .05f, Vec3.len(Vec3.sub(lookFrom, lookAt))
-        );
     }
 
     @Override
@@ -69,7 +62,7 @@ public class Jaytracer implements Renderer {
         int[] offScreenRaster = dataBuffer.getData();
 
 
-        HitableList world = getSceneData();
+        HitableList world = getSceneDescription();
 
         for (int j = scrHeight - 1; j >= 0; j--) {
             for (int i = 0; i < scrWidth; i++) {
@@ -84,9 +77,11 @@ public class Jaytracer implements Renderer {
     @Override
     public Stats getStats() {
         if (scrHeight == 0 || scrHeight == 0) {
-            return new Stats(0, 1);
+            return new Stats(0, 1, 0);
         } else {
-            return new Stats(nrOfPixelDone + 1, scrWidth * scrHeight);
+            int rays = currRaysDone - lastRaysDone;
+            lastRaysDone = currRaysDone;
+            return new Stats(nrOfPixelDone + 1, scrWidth * scrHeight, rays);
         }
     }
 
@@ -97,7 +92,8 @@ public class Jaytracer implements Renderer {
             float v = (j + rand.nextFloat())/(float)ny;
             Ray r = camera.getRay(u, v);
             Ray.pap(2f, r);
-            color = Vec3.add(color, color(r, world, 0));
+            color = Vec3.add(color, trace(r, world, 0));
+            currRaysDone += 1;
         }
         color = Vec3.div(color, (float) nrOfSamplesPerPixel);
 
@@ -119,15 +115,18 @@ public class Jaytracer implements Renderer {
         int[] offScreenRaster = dataBuffer.getData();
 
 
-        HitableList world = getSceneData();
+        HitableList world = getSceneDescription();
 
         renderPoint(scrWidth, scrHeight, offScreenRaster, world, i, j, true);
 
         System.out.println(String.format("Point time is %d[ms]", System.currentTimeMillis() - start));
     }
 
-    private HitableList getSceneData() {
-        List<Hitable> hitables = new ArrayList<>();
+    private HitableList getSceneDescription() {
+        return sceneDescription;
+    }
+
+    private void getRandomSpheres(List<Hitable> hitables) {
         hitables.add(Sphere.of(Vec3.of(0f, -1000f, 0f),1000f, Lambertian.of(Vec3.of(.5f, .5f, .5f))));
         for (int a = -11; a < 11; ++a) {
             for (int b = -11; b < 11; ++b) {
@@ -162,18 +161,16 @@ public class Jaytracer implements Renderer {
         hitables.add(Sphere.of(Vec3.of(4f, 1f, 0f),1f, Dielectric.of(1.5f)));
         hitables.add(Sphere.of(Vec3.of(-4f, 1f, 0f),1f, Lambertian.of(Vec3.of(.4f, .2f, .1f))));
         hitables.add(Sphere.of(Vec3.of(0f, 1f, 0f),1f, Metal.of(Vec3.of(.7f, .6f, .5f), 0f)));
-
-        return HitableList.of(hitables);
     }
 
-    private Vec3 color(Ray ray, Hitable world, int depth) {
+    private Vec3 trace(Ray ray, Hitable world, int depth) {
         HitRecord rec = world.hit(ray, .001f, Float.MAX_VALUE);
         if (rec != null) {
             Ref<Ray> scattered = Ref.empty();
             Ref<Vec3> attenuation = Ref.empty();
 
             if (depth < 50 && rec.mat.scatter(ray, rec, attenuation, scattered)) {
-                return Vec3.mul(attenuation.get(), color(scattered.get(), world, depth + 1));
+                return Vec3.mul(attenuation.get(), trace(scattered.get(), world, depth + 1));
             } else {
                 return Vec3.ZERO;
             }

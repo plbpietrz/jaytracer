@@ -19,7 +19,7 @@ public class Lambertian implements Material {
     @Override
     public boolean scatter(Ray rayIn, HitRecord rec, Ref<Vec3> attenuation, Ref<Ray> scattered) {
         Vec3 target = Vec3.add(rec.pnt, rec.norm, Vec3.rvius());
-        scattered.set(Ray.of(rec.pnt, Vec3.sub(target, rec.pnt)));
+        scattered.set(Ray.of(rec.pnt, Vec3.sub(target, rec.pnt), rayIn.time));
         attenuation.set(albedo);
         return true;
     }

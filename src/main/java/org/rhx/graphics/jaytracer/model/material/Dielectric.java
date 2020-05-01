@@ -6,13 +6,14 @@ import org.rhx.graphics.jaytracer.model.Vec3;
 import org.rhx.graphics.jaytracer.model.util.HitRecord;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Dielectric material definition. Scatters and reflects light based on the refraction index and Schlicks approximation.
  */
 public class Dielectric implements Material {
 
-    private static final Random rand = new Random(System.currentTimeMillis());
+    private static final Random rand = ThreadLocalRandom.current();
 
     /** Refraction index */
     private final float refIdx;

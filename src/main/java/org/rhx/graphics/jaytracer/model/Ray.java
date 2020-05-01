@@ -18,9 +18,15 @@ public class Ray {
      */
     public final Vec3 dir;
 
-    private Ray(Vec3 a, Vec3 b) {
+    /**
+     * Time
+     */
+    public final float time;
+
+    private Ray(Vec3 a, Vec3 b, float t) {
         orig = a;
         dir = b;
+        time = t;
     }
 
     @Override
@@ -29,13 +35,17 @@ public class Ray {
     }
 
     public static Ray of(Vec3 a, Vec3 b) {
-        return new Ray(a, b);
+        return new Ray(a, b, 0f);
+    }
+
+    public static Ray of(Vec3 a, Vec3 b, float t) {
+        return new Ray(a, b, t);
     }
 
     /**
      * Point at parameter t (0,1) along the ray direction.
-     * @param t
-     * @param r
+     * @param t parameter along the ray
+     * @param r ray
      * @return {@link Vec3}
      */
     public static Vec3 pap(float t, Ray r) {

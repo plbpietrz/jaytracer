@@ -1,15 +1,16 @@
 package org.rhx.graphics.jaytracer.model;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.sqrt;
 
 /**
- * This object represents a value in R3. It could be a Cartesian vector or RGB color value.
+ * This object represents a value in R3. It could be a cartesian vector or RGB color value.
  */
 public class Vec3 {
 
-    private static final Random rand = new Random(System.currentTimeMillis());
+    private static final Random rand = ThreadLocalRandom.current();
 
     public static Vec3 ZERO = new Vec3(0.0f, 0.0f, 0.0f);
 
@@ -64,6 +65,18 @@ public class Vec3 {
     public static Vec3 add(final Vec3 u, final Vec3 v) {
         return new Vec3(u.e0 + v.e0, u.e1 + v.e1, u.e2 + v.e2);
     }
+
+//    public static Vec3 add(final Vec3 u, final Vec3 v, final Vec3 w) {
+//        return new Vec3(u.e0 + v.e0 + w.e0, u.e1 + v.e1 + w.e1, u.e2 + v.e2 + w.e2);
+//    }
+//
+//    public static Vec3 add(final Vec3 u, final Vec3 v, final Vec3 w, final Vec3 z) {
+//        return new Vec3(
+//                u.e0 + v.e0 + w.e0 + z.e0,
+//                u.e1 + v.e1 + w.e1 + z.e1,
+//                u.e2 + v.e2 + w.e2 + z.e2
+//        );
+//    }
 
     public static Vec3 add(final Vec3 ... us) {
         float e0 = 0.0f, e1 = 0.0f, e2 = 0.0f;
@@ -126,8 +139,8 @@ public class Vec3 {
 
     /**
      * Length squared.
-     * @param u
-     * @return
+     * @param u vector
+     * @return length
      */
     public static float lensq(final Vec3 u) {
         return u.e0 * u.e0 + u.e1 * u.e1 + u.e2 * u.e2;
@@ -165,14 +178,23 @@ public class Vec3 {
         return p;
     }
 
-    public static void main(String[] args) {
-        long start = System.currentTimeMillis();
-        Vec3 p = Vec3.ONES;
-        for (int i = 0; i < 10000000; ++i) {
-            p = Vec3.rvius();
-        }
-        System.out.println(String.format("time: %d", System.currentTimeMillis() - start));
-        System.out.println(p);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Vec3 vec3 = (Vec3) o;
+
+        if (Float.compare(vec3.e0, e0) != 0) return false;
+        if (Float.compare(vec3.e1, e1) != 0) return false;
+        return Float.compare(vec3.e2, e2) == 0;
     }
 
+    @Override
+    public int hashCode() {
+        int result = (e0 != +0.0f ? Float.floatToIntBits(e0) : 0);
+        result = 31 * result + (e1 != +0.0f ? Float.floatToIntBits(e1) : 0);
+        result = 31 * result + (e2 != +0.0f ? Float.floatToIntBits(e2) : 0);
+        return result;
+    }
 }

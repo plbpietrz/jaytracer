@@ -33,17 +33,17 @@ public class Sphere implements Hitable {
     public HitRecord hit(Ray r, float tMin, float tMax) {
         Vec3 oc = sub(r.orig, center);
         float a = dot(r.dir, r.dir);
-        float b = dot(oc, r.dir);
+        float halfb = dot(oc, r.dir);
         float c = dot(oc, oc) - radius*radius;
 
-        float delta = b * b - a * c;
+        float delta = halfb * halfb - a * c;
         if (delta > 0) {
-            float temp = (-b - (float) sqrt(delta)) / a;
+            float temp = (-halfb - (float) sqrt(delta)) / a;
             if (tMin < temp && temp < tMax) {
                 Vec3 pap = Ray.pap(temp, r);
                 return HitRecord.of(temp, pap, div(sub(pap, center), radius), material);
             }
-            temp = (-b + (float) sqrt(delta)) / a;
+            temp = (-halfb + (float) sqrt(delta)) / a;
             if (tMin < temp && temp < tMax) {
                 Vec3 pap = Ray.pap(temp, r);
                 return HitRecord.of(temp, pap, div(sub(pap, center), radius), material);

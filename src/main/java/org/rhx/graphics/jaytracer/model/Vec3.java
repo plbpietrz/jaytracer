@@ -62,108 +62,85 @@ public class Vec3 {
         return new Vec3(e0, e1, e2);
     }
 
-    public static Vec3 add(final Vec3 u, final Vec3 v) {
-        return new Vec3(u.e0 + v.e0, u.e1 + v.e1, u.e2 + v.e2);
+    public static Vec3 add(final Vec3 v0, final Vec3 v1) {
+        return new Vec3(v0.e0 + v1.e0, v0.e1 + v1.e1, v0.e2 + v1.e2);
     }
 
-//    public static Vec3 add(final Vec3 u, final Vec3 v, final Vec3 w) {
-//        return new Vec3(u.e0 + v.e0 + w.e0, u.e1 + v.e1 + w.e1, u.e2 + v.e2 + w.e2);
-//    }
-//
-//    public static Vec3 add(final Vec3 u, final Vec3 v, final Vec3 w, final Vec3 z) {
-//        return new Vec3(
-//                u.e0 + v.e0 + w.e0 + z.e0,
-//                u.e1 + v.e1 + w.e1 + z.e1,
-//                u.e2 + v.e2 + w.e2 + z.e2
-//        );
-//    }
-
-    public static Vec3 add(final Vec3 ... us) {
-        float e0 = 0.0f, e1 = 0.0f, e2 = 0.0f;
-        for (Vec3 v : us) {
-            e0 += v.e0;
-            e1 += v.e1;
-            e2 += v.e2;
-        }
-        return new Vec3(e0, e1, e2);
+    public static Vec3 add(final Vec3 v0, final Vec3 v1, final Vec3 v2) {
+        return new Vec3(v0.e0 + v1.e0 + v2.e0, v0.e1 + v1.e1 + v2.e1, v0.e2 + v1.e2 + v2.e2);
     }
 
-    public static Vec3 sub(final Vec3 u, final Vec3 v) {
-        return new Vec3(u.e0 - v.e0, u.e1 - v.e1, u.e2 - v.e2);
-    }
-
-    public static Vec3 sub(final Vec3 u, final Vec3 ... us) {
-        float e0 = u.e0, e1 = u.e1, e2 = u.e2;
-        for (Vec3 v : us) {
-            e0 -= v.e0;
-            e1 -= v.e1;
-            e2 -= v.e2;
-        }
-        return new Vec3(e0, e1, e2);
-    }
-
-    public static Vec3 mul(final Vec3 u, final Vec3 v) {
-        return new Vec3(u.e0 * v.e0, u.e1 * v.e1, u.e2 * v.e2);
-    }
-
-    public static Vec3 mul(final Vec3 ... us) {
-        float e0 = 1f, e1 = 1f, e2 = 1f;
-        for (Vec3 v : us) {
-            e0 *= v.e0;
-            e1 *= v.e1;
-            e2 *= v.e2;
-        }
-        return new Vec3(e0, e1, e2);
-    }
-
-    public static Vec3 div(final Vec3 u, final Vec3 v) {
-        return new Vec3(u.e0 / v.e0, u.e1 / v.e1, u.e2 / v.e2);
-    }
-
-    public static Vec3 mul(final float t, final Vec3 u) {
-        return new Vec3(u.e0 * t, u.e1 * t, u.e2 * t);
-    }
-
-    public static Vec3 mul(final float t, final Vec3 ... us) {
-        return mul(t, mul(us));
-    }
-
-    public static Vec3 div(final Vec3 u, final float v) {
-        float oneOverV = 1 / v;
-        return new Vec3(u.e0 * oneOverV, u.e1 * oneOverV, u.e2 * oneOverV);
-    }
-
-    public static float len(final Vec3 u) {
-        return (float) sqrt(u.e0 * u.e0 + u.e1 * u.e1 + u.e2 * u.e2);
-    }
-
-    /**
-     * Length squared.
-     * @param u vector
-     * @return length
-     */
-    public static float lensq(final Vec3 u) {
-        return u.e0 * u.e0 + u.e1 * u.e1 + u.e2 * u.e2;
-    }
-
-    public static Vec3 unit(final Vec3 u) {
-        return div(u, len(u));
-    }
-
-    public static float dot(final Vec3 u, final Vec3 v) {
-        return u.e0 * v.e0 + u.e1 * v.e1 + u.e2 * v.e2;
-    }
-
-    public static Vec3 cross(final Vec3 u, final Vec3 v) {
+    public static Vec3 add(final Vec3 v0, final Vec3 v1, final Vec3 v2, final Vec3 v3) {
         return new Vec3(
-                u.e1 * v.e2 - u.e2 * v.e1,
-                u.e2 * v.e0 - u.e0 * v.e2,
-                u.e0 * v.e1 - u.e1 * v.e0
+                v0.e0 + v1.e0 + v2.e0 + v3.e0,
+                v0.e1 + v1.e1 + v2.e1 + v3.e1,
+                v0.e2 + v1.e2 + v2.e2 + v3.e2
         );
     }
 
-    public static Vec3 neg(final Vec3 v) {
-        return new Vec3(-v.e0, -v.e1, -v.e2);
+    public static Vec3 add(final Vec3 v0, final Vec3 v1, final Vec3 v2, final Vec3 v3, final Vec3 v4) {
+        return new Vec3(
+                v0.e0 + v1.e0 + v2.e0 + v3.e0 + v4.e0,
+                v0.e1 + v1.e1 + v2.e1 + v3.e1 + v4.e1,
+                v0.e2 + v1.e2 + v2.e2 + v3.e2 + v4.e2
+        );
+    }
+
+    public static Vec3 sub(final Vec3 v0, final Vec3 v1) {
+        return new Vec3(v0.e0 - v1.e0, v0.e1 - v1.e1, v0.e2 - v1.e2);
+    }
+
+    public static Vec3 sub(final Vec3 v0, final Vec3 v1, final Vec3 v2) {
+        return new Vec3(v0.e0 - v1.e0 - v2.e0, v0.e1 - v1.e1 - v2.e1, v0.e2 - v1.e2 - v2.e2);
+    }
+
+    public static Vec3 sub(final Vec3 v0, final Vec3 v1, final Vec3 v2, final Vec3 v3) {
+        return new Vec3(
+                v0.e0 - v1.e0 - v2.e0 - v3.e0,
+                v0.e1 - v1.e1 - v2.e1 - v3.e1,
+                v0.e2 - v1.e2 - v2.e2 - v3.e2
+        );
+    }
+
+    public static Vec3 mul(final Vec3 v0, final Vec3 v1) {
+        return new Vec3(v0.e0 * v1.e0, v0.e1 * v1.e1, v0.e2 * v1.e2);
+    }
+
+    public static Vec3 div(final Vec3 v0, final Vec3 v1) {
+        return new Vec3(v0.e0 / v1.e0, v0.e1 / v1.e1, v0.e2 / v1.e2);
+    }
+
+    public static Vec3 mul(final float t, final Vec3 v0) {
+        return new Vec3(v0.e0 * t, v0.e1 * t, v0.e2 * t);
+    }
+
+    public static Vec3 div(final Vec3 v0, final float t) {
+        float oneOverV = 1 / t;
+        return new Vec3(v0.e0 * oneOverV, v0.e1 * oneOverV, v0.e2 * oneOverV);
+    }
+
+    public static float len(final Vec3 v0) {
+        return (float) sqrt(v0.e0 * v0.e0 + v0.e1 * v0.e1 + v0.e2 * v0.e2);
+    }
+
+    public static Vec3 unit(final Vec3 v0) {
+        return div(v0, len(v0));
+    }
+
+    public static float dot(final Vec3 v0, final Vec3 v1) {
+        return v0.e0 * v1.e0 + v0.e1 * v1.e1 + v0.e2 * v1.e2;
+    }
+
+    public static Vec3 cross(final Vec3 v0, final Vec3 v1) {
+        return new Vec3(
+                v0.e1 * v1.e2 - v0.e2 * v1.e1,
+                v0.e2 * v1.e0 - v0.e0 * v1.e2,
+                v0.e0 * v1.e1 - v0.e1 * v1.e0
+        );
+    }
+
+    public static Vec3 neg(final Vec3 v0) {
+        return new Vec3(-v0.e0, -v0.e1, -v0.e2);
     }
 
     /**
@@ -174,7 +151,7 @@ public class Vec3 {
         Vec3 p;
         do {
             p = new Vec3(2f * rand.nextFloat() - 1f, 2f * rand.nextFloat() - 1f, 2f * rand.nextFloat() - 1f);
-        } while (Vec3.lensq(p) >= 1f);
+        } while (Vec3.dot(p, p) >= 1f);
         return p;
     }
 

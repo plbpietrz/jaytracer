@@ -99,7 +99,7 @@ public class MainFrame extends JFrame {
     }
 
     private static Jaytracer getJaytracer(BufferedImage image) {
-        return new Jaytracer(1, RandomSceneDescription.get(), image);
+        return new Jaytracer(100, Static9BallsScene.get(), image);
     }
 
 }

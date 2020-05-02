@@ -53,11 +53,12 @@ public class Jaytracer {
         long start = System.currentTimeMillis();
 
         for (int j = scrHeight - 1; j >= 0; j--) {
-            new Thread().start();
+
             for (int i = 0; i < scrWidth; i++) {
                 renderPoint(i, j, false);
                 nrOfPixelDone = (scrHeight - j) * scrWidth + i;
             }
+
         }
 
         LOG.info("Frame time is {}[ms]", System.currentTimeMillis() - start);

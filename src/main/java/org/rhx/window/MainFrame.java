@@ -46,7 +46,7 @@ public class MainFrame extends JFrame {
         drawPanel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new Thread(renderer::draw).start();
+                new Thread(() -> renderer.draw(Static9BallsScene.get())).start();
             }
 
             @Override
@@ -99,7 +99,7 @@ public class MainFrame extends JFrame {
     }
 
     private static Jaytracer getJaytracer(BufferedImage image) {
-        return new Jaytracer(100, Static9BallsScene.get(), image);
+        return new Jaytracer(100, image);
     }
 
 }

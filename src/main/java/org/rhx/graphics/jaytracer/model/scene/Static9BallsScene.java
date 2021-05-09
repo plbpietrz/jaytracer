@@ -1,6 +1,7 @@
 package org.rhx.graphics.jaytracer.model.scene;
 
 import org.rhx.graphics.jaytracer.Camera;
+import org.rhx.graphics.jaytracer.MovingSphere;
 import org.rhx.graphics.jaytracer.Sphere;
 import org.rhx.graphics.jaytracer.model.Hitable;
 import org.rhx.graphics.jaytracer.model.HitableList;
@@ -12,7 +13,7 @@ import org.rhx.graphics.jaytracer.model.material.Metal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Static9BallsScene implements SceneDecription {
+public class Static9BallsScene implements SceneDescription {
 
     private static final Static9BallsScene SCENE;
 
@@ -22,7 +23,7 @@ public class Static9BallsScene implements SceneDecription {
         List<Hitable> hitables = new ArrayList<>();
 
         hitables.add(Sphere.of(Vec3.of(0, -100.5f, -1), 100f, Lambertian.of(Vec3.of(0.8f, 0.8f, 0.8f))));
-        hitables.add(Sphere.of(Vec3.of(2, 0, -1), 0.5f, Lambertian.of(Vec3.of(0.8f, 0.4f, 0.4f))));
+        hitables.add(MovingSphere.of(Vec3.of(2, 0, -1), Vec3.of(2, 1, -1), 0.f, 1.f, 0.5f, Lambertian.of(Vec3.of(0.8f, 0.4f, 0.4f))));
         hitables.add(Sphere.of(Vec3.of(0, 0, -1), 0.5f, Lambertian.of(Vec3.of(0.4f, 0.8f, 0.4f))));
 
         hitables.add(Sphere.of(Vec3.of(-2, 0, -1), 0.5f, Metal.of(Vec3.of(0.4f, 0.4f, 0.8f), 0f)));

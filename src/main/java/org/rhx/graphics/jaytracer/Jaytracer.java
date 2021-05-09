@@ -1,10 +1,9 @@
 package org.rhx.graphics.jaytracer;
 
-import org.rhx.graphics.jaytracer.model.Hitable;
 import org.rhx.graphics.jaytracer.model.HitableList;
 import org.rhx.graphics.jaytracer.model.Ray;
 import org.rhx.graphics.jaytracer.model.Vec3;
-import org.rhx.graphics.jaytracer.model.scene.SceneDecription;
+import org.rhx.graphics.jaytracer.model.scene.SceneDescription;
 import org.rhx.graphics.jaytracer.model.util.HitRecord;
 import org.rhx.window.Stats;
 import org.slf4j.Logger;
@@ -24,13 +23,13 @@ public class Jaytracer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Jaytracer.class);
 
-    private final HitableList sceneDescription;
     private final BufferedImage drawable;
     private final int scrWidth;
     private final int scrHeight;
-
     private final Random rand;
-    private final Camera camera;
+
+    private HitableList world;
+    private Camera camera;
 
     private volatile int nrOfPixelDone = 0;
 
@@ -39,17 +38,18 @@ public class Jaytracer {
     private int lastRaysDone;
     private Runnable onFinish;
 
-    public Jaytracer(int nrOfSamplesPerPixel, SceneDecription sceneDescription, BufferedImage image) {
+    public Jaytracer(int nrOfSamplesPerPixel, BufferedImage image) {
         this.nrOfSamplesPerPixel = nrOfSamplesPerPixel;
         this.rand = ThreadLocalRandom.current();
-        this.sceneDescription = sceneDescription.getSceneDescription();
-        this.camera = sceneDescription.getCamera(image.getWidth(), image.getHeight());
         this.drawable = image;
         this.scrWidth = image.getWidth();
         this.scrHeight = image.getHeight();
     }
 
-    public void draw() {
+    public void draw(SceneDescription sceneDescription) {
+        this.world = sceneDescription.getSceneDescription();
+        this.camera = sceneDescription.getCamera(scrWidth, scrHeight);
+
         long start = System.currentTimeMillis();
 
         for (int j = scrHeight - 1; j >= 0; j--) {
@@ -83,7 +83,7 @@ public class Jaytracer {
             float v = (j + rand.nextFloat())/(float)scrHeight;
             Ray r = camera.getRay(u, v);
             Ray.pap(2f, r);
-            color = Vec3.add(color, trace(r, sceneDescription, 0));
+            color = Vec3.add(color, trace(r, 0));
             currRaysDone += 1;
         }
         color = Vec3.div(color, (float) nrOfSamplesPerPixel);
@@ -107,14 +107,14 @@ public class Jaytracer {
         LOG.info("Point time is {}[ms]", System.currentTimeMillis() - start);
     }
 
-    private Vec3 trace(Ray ray, Hitable world, int depth) {
+    private Vec3 trace(Ray ray, int depth) {
         HitRecord rec = world.hit(ray, .001f, Float.MAX_VALUE);
         if (rec != null) {
             Ref<Ray> scattered = Ref.empty();
             Ref<Vec3> attenuation = Ref.empty();
 
             if (depth < 50 && rec.mat.scatter(ray, rec, attenuation, scattered)) {
-                return Vec3.mul(attenuation.get(), trace(scattered.get(), world, depth + 1));
+                return Vec3.mul(attenuation.get(), trace(scattered.get(), depth + 1));
             } else {
                 return Vec3.ZERO;
             }

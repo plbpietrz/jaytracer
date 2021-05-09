@@ -25,8 +25,8 @@ public class HitableList implements Hitable {
     public HitRecord hit(Ray ray, float tMin, float tMax) {
         HitRecord rec = null;
         float closestSoFar = tMax;
-        for (int idx = 0; idx < hitables.size(); ++idx) {
-            HitRecord tempRec = hitables.get(idx).hit(ray, tMin, closestSoFar);
+        for (Hitable hitable : hitables) {
+            HitRecord tempRec = hitable.hit(ray, tMin, closestSoFar);
             if (tempRec != null) {
                 closestSoFar = tempRec.t;
                 rec = tempRec;

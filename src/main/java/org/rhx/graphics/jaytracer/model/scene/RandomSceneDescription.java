@@ -1,7 +1,6 @@
 package org.rhx.graphics.jaytracer.model.scene;
 
 import org.rhx.graphics.jaytracer.Camera;
-import org.rhx.graphics.jaytracer.MovingSphere;
 import org.rhx.graphics.jaytracer.Sphere;
 import org.rhx.graphics.jaytracer.model.Hitable;
 import org.rhx.graphics.jaytracer.model.HitableList;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class RandomSceneDescription implements SceneDecription {
+public class RandomSceneDescription implements SceneDescription {
 
     private HitableList sceneDescription;
 

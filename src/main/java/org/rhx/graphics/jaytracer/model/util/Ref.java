@@ -1,4 +1,4 @@
-package org.rhx.graphics.jaytracer;
+package org.rhx.graphics.jaytracer.model.util;
 
 /**
  * C++ reference ;-)

@@ -1,6 +1,6 @@
 package org.rhx.graphics.jaytracer.model.material;
 
-import org.rhx.graphics.jaytracer.Ref;
+import org.rhx.graphics.jaytracer.model.util.Ref;
 import org.rhx.graphics.jaytracer.model.Ray;
 import org.rhx.graphics.jaytracer.model.Vec3;
 import org.rhx.graphics.jaytracer.model.util.HitRecord;
@@ -16,7 +16,7 @@ public class Metal implements Material {
 
     private Metal(Vec3 albedo, float fuzz) {
         this.albedo = albedo;
-        this.fuzz  = fuzz < 1f ? fuzz : 1f;
+        this.fuzz  = Math.min(fuzz, 1f);
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.rhx.graphics.jaytracer.model.Ray;
 import org.rhx.graphics.jaytracer.model.Vec3;
 import org.rhx.graphics.jaytracer.model.scene.SceneDescription;
 import org.rhx.graphics.jaytracer.model.util.HitRecord;
+import org.rhx.graphics.jaytracer.model.util.Ref;
 import org.rhx.window.Stats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

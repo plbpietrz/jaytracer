@@ -12,9 +12,9 @@ public class Vec3 {
 
     private static final Random rand = ThreadLocalRandom.current();
 
-    public static Vec3 ZERO = new Vec3(0.0f, 0.0f, 0.0f);
+    public static final Vec3 ZERO = new Vec3(0.0f, 0.0f, 0.0f);
 
-    public static Vec3 ONES = new Vec3(1.0f, 1.0f, 1.0f);
+    public static final Vec3 ONES = new Vec3(1.0f, 1.0f, 1.0f);
 
     private final float e0;
     private final float e1;

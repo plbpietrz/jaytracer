@@ -1,10 +1,7 @@
 package org.rhx.window;
 
-import org.rhx.graphics.jaytracer.Camera;
 import org.rhx.graphics.jaytracer.Jaytracer;
-import org.rhx.graphics.jaytracer.model.Vec3;
 import org.rhx.graphics.jaytracer.model.scene.RandomSceneDescription;
-import org.rhx.graphics.jaytracer.model.scene.Static9BallsScene;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.*;
-import java.util.Random;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.TimeUnit;
 
 public class MainFrame extends JFrame {
@@ -30,7 +26,7 @@ public class MainFrame extends JFrame {
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 
         JPanel drawPanel = new JPanel() {
-            //init panel sizse
+            //init panel size
             {setSize(image.getWidth(), image.getHeight());}
 
             @Override
@@ -46,7 +42,8 @@ public class MainFrame extends JFrame {
         drawPanel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new Thread(() -> renderer.draw(Static9BallsScene.get())).start();
+//                new Thread(() -> renderer.draw(Static9BallsScene.get())).start();
+                new Thread(() -> renderer.draw(RandomSceneDescription.get())).start();
             }
 
             @Override
@@ -99,7 +96,7 @@ public class MainFrame extends JFrame {
     }
 
     private static Jaytracer getJaytracer(BufferedImage image) {
-        return new Jaytracer(100, image);
+        return new Jaytracer(50, image);
     }
 
 }

@@ -1,6 +1,6 @@
 package org.rhx.graphics.jaytracer.model.material;
 
-import org.rhx.graphics.jaytracer.Ref;
+import org.rhx.graphics.jaytracer.model.util.Ref;
 import org.rhx.graphics.jaytracer.model.Ray;
 import org.rhx.graphics.jaytracer.model.Vec3;
 import org.rhx.graphics.jaytracer.model.util.HitRecord;

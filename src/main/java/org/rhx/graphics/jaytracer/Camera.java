@@ -19,7 +19,7 @@ public class Camera {
     private final float lensRadius;
     private final float t0, t1;
 
-    private static Random rand = ThreadLocalRandom.current();
+    private static final Random rand = ThreadLocalRandom.current();
 
     private Camera(Vec3 lookFrom, Vec3 lookAt, Vec3 vup, float vFov, float aspect, float aperture, float focusDist, float startTime, float endTime) {
         double theta = vFov * Math.PI / 180;
@@ -71,7 +71,7 @@ public class Camera {
      * @param lookAt camera target point
      * @param vup vertical up vector
      * @param vFov vertical field of view
-     * @param aspect aspect ration
+     * @param aspect aspect ratio
      * @param aperture camera aperture (0 - absolute focus, > 0 selective focus)
      * @param focusDist focus distance
      * @param startTime ray generation time interval start

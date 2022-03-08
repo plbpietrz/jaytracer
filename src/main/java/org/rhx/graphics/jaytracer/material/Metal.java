@@ -1,9 +1,11 @@
-package org.rhx.graphics.jaytracer.model.material;
+package org.rhx.graphics.jaytracer.material;
 
-import org.rhx.graphics.jaytracer.model.util.Ref;
-import org.rhx.graphics.jaytracer.model.Ray;
-import org.rhx.graphics.jaytracer.model.Vec3;
-import org.rhx.graphics.jaytracer.model.util.HitRecord;
+import org.rhx.graphics.jaytracer.util.Ref;
+import org.rhx.graphics.jaytracer.core.Ray;
+import org.rhx.graphics.jaytracer.core.Vec3;
+import org.rhx.graphics.jaytracer.util.HitRecord;
+
+import static org.rhx.graphics.jaytracer.util.FMath.fmin;
 
 /**
  * Metal material definition. Will bounce the {@link Ray} in a defined way, with a small variance base on the
@@ -16,7 +18,7 @@ public class Metal implements Material {
 
     private Metal(Vec3 albedo, float fuzz) {
         this.albedo = albedo;
-        this.fuzz  = Math.min(fuzz, 1f);
+        this.fuzz  = fmin(fuzz, 1f);
     }
 
     @Override
@@ -35,8 +37,4 @@ public class Metal implements Material {
         return new Metal(albedo, fuzz);
     }
 
-    @Override
-    public String toString() {
-        return String.format("#M[%s, %.2f]", albedo, fuzz);
-    }
 }

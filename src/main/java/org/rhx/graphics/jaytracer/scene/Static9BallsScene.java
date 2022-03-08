@@ -1,14 +1,14 @@
-package org.rhx.graphics.jaytracer.model.scene;
+package org.rhx.graphics.jaytracer.scene;
 
 import org.rhx.graphics.jaytracer.Camera;
 import org.rhx.graphics.jaytracer.MovingSphere;
 import org.rhx.graphics.jaytracer.Sphere;
-import org.rhx.graphics.jaytracer.model.Hitable;
-import org.rhx.graphics.jaytracer.model.HitableList;
-import org.rhx.graphics.jaytracer.model.Vec3;
-import org.rhx.graphics.jaytracer.model.material.Dielectric;
-import org.rhx.graphics.jaytracer.model.material.Lambertian;
-import org.rhx.graphics.jaytracer.model.material.Metal;
+import org.rhx.graphics.jaytracer.core.Hitable;
+import org.rhx.graphics.jaytracer.core.HitableList;
+import org.rhx.graphics.jaytracer.core.Vec3;
+import org.rhx.graphics.jaytracer.material.Dielectric;
+import org.rhx.graphics.jaytracer.material.Lambertian;
+import org.rhx.graphics.jaytracer.material.Metal;
 
 import java.util.ArrayList;
 import java.util.List;

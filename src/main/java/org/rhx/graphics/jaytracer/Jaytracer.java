@@ -1,11 +1,12 @@
 package org.rhx.graphics.jaytracer;
 
-import org.rhx.graphics.jaytracer.model.HitableList;
-import org.rhx.graphics.jaytracer.model.Ray;
-import org.rhx.graphics.jaytracer.model.Vec3;
-import org.rhx.graphics.jaytracer.model.scene.SceneDescription;
-import org.rhx.graphics.jaytracer.model.util.HitRecord;
-import org.rhx.graphics.jaytracer.model.util.Ref;
+import org.rhx.graphics.jaytracer.bvh.BVHNode;
+import org.rhx.graphics.jaytracer.core.Hitable;
+import org.rhx.graphics.jaytracer.core.Ray;
+import org.rhx.graphics.jaytracer.core.Vec3;
+import org.rhx.graphics.jaytracer.scene.SceneDescription;
+import org.rhx.graphics.jaytracer.util.HitRecord;
+import org.rhx.graphics.jaytracer.util.Ref;
 import org.rhx.window.Stats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.sqrt;
-import static org.rhx.graphics.jaytracer.model.Vec3.*;
+import static org.rhx.graphics.jaytracer.core.Vec3.*;
 
 /**
  * Jaytracer main class.
@@ -29,7 +30,8 @@ public class Jaytracer {
     private final int scrHeight;
     private final Random rand;
 
-    private HitableList world;
+    private Hitable world;
+//    private BVHNode world;
     private Camera camera;
 
     private volatile int nrOfPixelDone = 0;
@@ -48,7 +50,8 @@ public class Jaytracer {
     }
 
     public void draw(SceneDescription sceneDescription) {
-        this.world = sceneDescription.getSceneDescription();
+//        this.world = sceneDescription.getSceneDescription();
+        this.world = BVHNode.of(sceneDescription.getSceneDescription(), 0.f, 1.f);
         this.camera = sceneDescription.getCamera(scrWidth, scrHeight);
 
         long start = System.currentTimeMillis();

@@ -1,4 +1,4 @@
-package org.rhx.graphics.jaytracer.model.util;
+package org.rhx.graphics.jaytracer.util;
 
 /**
  * C++ reference ;-)
@@ -27,8 +27,4 @@ public class Ref<T> {
         this.ref = ref;
     }
 
-    @Override
-    public String toString() {
-        return String.format("&%s", ref);
-    }
 }

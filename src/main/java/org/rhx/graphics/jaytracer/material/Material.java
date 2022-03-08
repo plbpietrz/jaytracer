@@ -1,10 +1,10 @@
-package org.rhx.graphics.jaytracer.model.material;
+package org.rhx.graphics.jaytracer.material;
 
-import org.rhx.graphics.jaytracer.model.Hitable;
-import org.rhx.graphics.jaytracer.model.util.Ref;
-import org.rhx.graphics.jaytracer.model.Ray;
-import org.rhx.graphics.jaytracer.model.Vec3;
-import org.rhx.graphics.jaytracer.model.util.HitRecord;
+import org.rhx.graphics.jaytracer.core.Hitable;
+import org.rhx.graphics.jaytracer.util.Ref;
+import org.rhx.graphics.jaytracer.core.Ray;
+import org.rhx.graphics.jaytracer.core.Vec3;
+import org.rhx.graphics.jaytracer.util.HitRecord;
 
 /**
  * Light interacting material definition.

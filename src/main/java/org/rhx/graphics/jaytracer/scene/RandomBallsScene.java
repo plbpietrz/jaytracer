@@ -1,27 +1,27 @@
-package org.rhx.graphics.jaytracer.model.scene;
+package org.rhx.graphics.jaytracer.scene;
 
 import org.rhx.graphics.jaytracer.Camera;
 import org.rhx.graphics.jaytracer.Sphere;
-import org.rhx.graphics.jaytracer.model.Hitable;
-import org.rhx.graphics.jaytracer.model.HitableList;
-import org.rhx.graphics.jaytracer.model.Vec3;
-import org.rhx.graphics.jaytracer.model.material.Dielectric;
-import org.rhx.graphics.jaytracer.model.material.Lambertian;
-import org.rhx.graphics.jaytracer.model.material.Metal;
+import org.rhx.graphics.jaytracer.core.Hitable;
+import org.rhx.graphics.jaytracer.core.HitableList;
+import org.rhx.graphics.jaytracer.core.Vec3;
+import org.rhx.graphics.jaytracer.material.Dielectric;
+import org.rhx.graphics.jaytracer.material.Lambertian;
+import org.rhx.graphics.jaytracer.material.Metal;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class RandomSceneDescription implements SceneDescription {
+public class RandomBallsScene implements SceneDescription {
 
     private HitableList sceneDescription;
 
-    private RandomSceneDescription() {}
+    private RandomBallsScene() {}
 
-    public static RandomSceneDescription get() {
-        return new RandomSceneDescription();
+    public static RandomBallsScene get() {
+        return new RandomBallsScene();
     }
 
     @Override

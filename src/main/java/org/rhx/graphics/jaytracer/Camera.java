@@ -1,7 +1,7 @@
 package org.rhx.graphics.jaytracer;
 
-import org.rhx.graphics.jaytracer.model.Ray;
-import org.rhx.graphics.jaytracer.model.Vec3;
+import org.rhx.graphics.jaytracer.core.Ray;
+import org.rhx.graphics.jaytracer.core.Vec3;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;

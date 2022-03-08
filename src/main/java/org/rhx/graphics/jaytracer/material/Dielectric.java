@@ -1,9 +1,9 @@
-package org.rhx.graphics.jaytracer.model.material;
+package org.rhx.graphics.jaytracer.material;
 
-import org.rhx.graphics.jaytracer.model.util.Ref;
-import org.rhx.graphics.jaytracer.model.Ray;
-import org.rhx.graphics.jaytracer.model.Vec3;
-import org.rhx.graphics.jaytracer.model.util.HitRecord;
+import org.rhx.graphics.jaytracer.util.Ref;
+import org.rhx.graphics.jaytracer.core.Ray;
+import org.rhx.graphics.jaytracer.core.Vec3;
+import org.rhx.graphics.jaytracer.util.HitRecord;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -79,8 +79,4 @@ public class Dielectric implements Material {
         return new Dielectric(refractionIdx);
     }
 
-    @Override
-    public String toString() {
-        return String.format("#D%.2f", refIdx);
-    }
 }

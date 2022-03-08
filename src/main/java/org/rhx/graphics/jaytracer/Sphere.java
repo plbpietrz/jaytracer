@@ -1,13 +1,14 @@
 package org.rhx.graphics.jaytracer;
 
-import org.rhx.graphics.jaytracer.model.Hitable;
-import org.rhx.graphics.jaytracer.model.Ray;
-import org.rhx.graphics.jaytracer.model.Vec3;
-import org.rhx.graphics.jaytracer.model.material.Material;
-import org.rhx.graphics.jaytracer.model.util.HitRecord;
+import org.rhx.graphics.jaytracer.bvh.AABB;
+import org.rhx.graphics.jaytracer.core.Hitable;
+import org.rhx.graphics.jaytracer.core.Ray;
+import org.rhx.graphics.jaytracer.core.Vec3;
+import org.rhx.graphics.jaytracer.material.Material;
+import org.rhx.graphics.jaytracer.util.HitRecord;
 
 import static java.lang.Math.sqrt;
-import static org.rhx.graphics.jaytracer.model.Vec3.*;
+import static org.rhx.graphics.jaytracer.core.Vec3.*;
 
 /**
  * Renderable sphere.
@@ -58,7 +59,10 @@ public class Sphere implements Hitable {
     }
 
     @Override
-    public String toString() {
-        return String.format("O(%s, %.2f, %s)", center, radius, material);
+    public AABB boundingBox(float t0, float t1) {
+        return AABB.of(
+                Vec3.sub(center, Vec3.of(radius, radius, radius)),
+                Vec3.add(center, Vec3.of(radius, radius, radius)));
     }
+
 }

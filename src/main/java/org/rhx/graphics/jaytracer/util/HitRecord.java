@@ -1,7 +1,7 @@
-package org.rhx.graphics.jaytracer.model.util;
+package org.rhx.graphics.jaytracer.util;
 
-import org.rhx.graphics.jaytracer.model.Vec3;
-import org.rhx.graphics.jaytracer.model.material.Material;
+import org.rhx.graphics.jaytracer.core.Vec3;
+import org.rhx.graphics.jaytracer.material.Material;
 
 public class HitRecord {
 
@@ -30,11 +30,6 @@ public class HitRecord {
         this.pnt = pnt;
         this.norm = norm;
         this.mat = mat;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("![t:%f, pnt:%s, norm:%s]", t, pnt, norm);
     }
 
     public static HitRecord of(float t, Vec3 p, Vec3 normal, Material mat) {

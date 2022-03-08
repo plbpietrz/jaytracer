@@ -1,7 +1,7 @@
-package org.rhx.graphics.jaytracer.model.scene;
+package org.rhx.graphics.jaytracer.scene;
 
 import org.rhx.graphics.jaytracer.Camera;
-import org.rhx.graphics.jaytracer.model.HitableList;
+import org.rhx.graphics.jaytracer.core.HitableList;
 
 public interface SceneDescription {
 

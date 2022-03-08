@@ -1,4 +1,4 @@
-package org.rhx.graphics.jaytracer.model;
+package org.rhx.graphics.jaytracer.core;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -8,7 +8,7 @@ import static java.lang.Math.sqrt;
 /**
  * This object represents a value in R3. It could be a cartesian vector or RGB color value.
  */
-public class Vec3 {
+public class Vec3 implements Comparable<Vec3> {
 
     private static final Random rand = ThreadLocalRandom.current();
 
@@ -50,9 +50,13 @@ public class Vec3 {
         return e2;
     }
 
-    @Override
-    public String toString() {
-        return String.format("(%.2f, %.2f, %.2f)", e0, e1, e2);
+    public float get(int i) {
+        return switch(i) {
+            case 0 -> e0;
+            case 1 -> e1;
+            case 2 -> e2;
+            default -> throw new IllegalArgumentException("Out of bounds: " + i);
+        };
     }
 
     public static Vec3 of(final double e0, final double e1, final double e2) {
@@ -156,6 +160,15 @@ public class Vec3 {
     }
 
     @Override
+    public String toString() {
+        return "Vec3{" +
+                "e0=" + e0 +
+                ", e1=" + e1 +
+                ", e2=" + e2 +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -169,9 +182,14 @@ public class Vec3 {
 
     @Override
     public int hashCode() {
-        int result = (e0 != +0.0f ? Float.floatToIntBits(e0) : 0);
-        result = 31 * result + (e1 != +0.0f ? Float.floatToIntBits(e1) : 0);
-        result = 31 * result + (e2 != +0.0f ? Float.floatToIntBits(e2) : 0);
+        int result = (e0 != 0.0f ? Float.floatToIntBits(e0) : 0);
+        result = 31 * result + (e1 != 0.0f ? Float.floatToIntBits(e1) : 0);
+        result = 31 * result + (e2 != 0.0f ? Float.floatToIntBits(e2) : 0);
         return result;
+    }
+
+    @Override
+    public int compareTo(Vec3 o) {
+        return Float.compare(len(this), len(o));
     }
 }

@@ -1,9 +1,9 @@
-package org.rhx.graphics.jaytracer.model.material;
+package org.rhx.graphics.jaytracer.material;
 
-import org.rhx.graphics.jaytracer.model.util.Ref;
-import org.rhx.graphics.jaytracer.model.Ray;
-import org.rhx.graphics.jaytracer.model.Vec3;
-import org.rhx.graphics.jaytracer.model.util.HitRecord;
+import org.rhx.graphics.jaytracer.util.Ref;
+import org.rhx.graphics.jaytracer.core.Ray;
+import org.rhx.graphics.jaytracer.core.Vec3;
+import org.rhx.graphics.jaytracer.util.HitRecord;
 
 /**
  * Lambertian material definition. Scatters {@link Ray}s in random directions modifying them with its diffuse color.
@@ -28,8 +28,4 @@ public class Lambertian implements Material {
         return new Lambertian(albedo);
     }
 
-    @Override
-    public String toString() {
-        return String.format("#L%s", albedo);
-    }
 }

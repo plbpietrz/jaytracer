@@ -6,8 +6,9 @@ import org.rhx.graphics.jaytracer.core.Ray;
 import org.rhx.graphics.jaytracer.material.Material;
 import org.rhx.graphics.jaytracer.util.HitRecord;
 
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class BVHNode implements Hitable {
 
@@ -15,27 +16,20 @@ public class BVHNode implements Hitable {
     private final Hitable right;
     private final AABB box;
 
-    private static final Random random = ThreadLocalRandom.current();
-
     private BVHNode(Hitable left, Hitable right, AABB box) {
         this.left = left;
         this.right = right;
         this.box = box;
     }
 
-    public static BVHNode of(HitableList hitables, float time0, float time1) {
-        List<Hitable> hitableList = hitables.getHitables();
-        return new BVHNode(hitableList, 0, 0, hitableList.size(), time0, time1);
+    public static BVHNode of(HitableList hitableList, float time0, float time1) {
+        List<Hitable> hitable = hitableList.getHitables();
+        return new BVHNode(hitable, 0, 0, hitable.size(), time0, time1);
     }
 
     private BVHNode(List<Hitable> hitables, int axis, int start, int end, float time0, float time1) {
         List<Hitable> objects = new ArrayList<>(hitables);
 
-//        int axis = random.nextInt(2);
-//        Comparator<Hitable> comparator = (axis == 0)
-//                ? BBOX_X_CMP
-//                : (axis == 1) ? BBOX_Y_CMP
-//                              : BBOX_Z_CMP;
         Comparator<Hitable> cmp = switch (axis) {
             case 0 -> BBOX_X_CMP;
             case 1 -> BBOX_Y_CMP;

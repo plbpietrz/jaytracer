@@ -69,23 +69,4 @@ public class AABB {
                 '}';
     }
 
-    public static void main(String[] args) {
-        AABB ab1 = AABB.of(Vec3.ZERO, Vec3.ONES);
-        AABB ab2 = AABB.of(Vec3.of(3f, 3f, 3f), Vec3.of(4f, 4f, 4f));
-        AABB ab3 = AABB.of(ab1, ab2);
-
-        System.out.println(ab1);
-        System.out.println(ab2);
-        System.out.println(ab3);
-        Ray ra1 = Ray.of(Vec3.of(2f, 2f, 2f), Vec3.of(-1f, -1f, -1f));
-        Ray ra2 = Ray.of(Vec3.of(2f, 2f, 3f), Vec3.of(3f, 3f, 1f));
-        System.out.println(ra1);
-        System.out.printf("ab1 hit: %b%n", ab1.hit(ra1, 0f, 1f));
-        System.out.printf("ab2 hit: %b%n", ab2.hit(ra1, 0f, 1f));
-        System.out.printf("ab3 hit: %b%n", ab3.hit(ra1, 0f, 1f));
-
-        System.out.printf("ab1 hit: %b%n", ab1.hit(ra2, 0f, 1f));
-        System.out.printf("ab2 hit: %b%n", ab2.hit(ra2, 0f, 1f));
-        System.out.printf("ab3 hit: %b%n", ab3.hit(ra2, 0f, 1f));
-    }
 }

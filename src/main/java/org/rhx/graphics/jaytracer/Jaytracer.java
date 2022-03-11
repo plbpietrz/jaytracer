@@ -31,7 +31,6 @@ public class Jaytracer {
     private final Random rand;
 
     private Hitable world;
-//    private BVHNode world;
     private Camera camera;
 
     private volatile int nrOfPixelDone = 0;

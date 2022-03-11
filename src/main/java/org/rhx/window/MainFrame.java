@@ -2,6 +2,7 @@ package org.rhx.window;
 
 import org.rhx.graphics.jaytracer.Jaytracer;
 import org.rhx.graphics.jaytracer.scene.RandomBallsScene;
+import org.rhx.graphics.jaytracer.scene.Static9BallsScene;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +44,8 @@ public class MainFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
 //                new Thread(() -> renderer.draw(new SimpleTestScene())).start();
-//                new Thread(() -> renderer.draw(Static9BallsScene.get())).start();
-                new Thread(() -> renderer.draw(RandomBallsScene.get())).start();
+                new Thread(() -> renderer.draw(Static9BallsScene.get())).start();
+//                new Thread(() -> renderer.draw(RandomBallsScene.get())).start();
             }
 
             @Override

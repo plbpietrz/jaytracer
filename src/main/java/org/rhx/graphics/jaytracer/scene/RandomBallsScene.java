@@ -8,11 +8,10 @@ import org.rhx.graphics.jaytracer.core.Vec3;
 import org.rhx.graphics.jaytracer.material.Dielectric;
 import org.rhx.graphics.jaytracer.material.Lambertian;
 import org.rhx.graphics.jaytracer.material.Metal;
+import org.rhx.graphics.jaytracer.util.SimpleRNG;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomBallsScene implements SceneDescription {
 
@@ -32,7 +31,7 @@ public class RandomBallsScene implements SceneDescription {
     }
 
     private List<Hitable> getRandomSpheres() {
-        Random rand = ThreadLocalRandom.current();
+        SimpleRNG rand = SimpleRNG.get();
         List<Hitable> hitable = new ArrayList<>();
         hitable.add(Sphere.of(Vec3.of(0f, -1000f, 0f), 1000f, Lambertian.of(Vec3.of(.5f, .5f, .5f))));
         for (int a = -11; a < 11; ++a) {

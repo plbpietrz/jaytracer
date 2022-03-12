@@ -1,19 +1,17 @@
 package org.rhx.graphics.jaytracer.material;
 
-import org.rhx.graphics.jaytracer.util.Ref;
 import org.rhx.graphics.jaytracer.core.Ray;
 import org.rhx.graphics.jaytracer.core.Vec3;
 import org.rhx.graphics.jaytracer.util.HitRecord;
-
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import org.rhx.graphics.jaytracer.util.Ref;
+import org.rhx.graphics.jaytracer.util.SimpleRNG;
 
 /**
  * Dielectric material definition. Scatters and reflects light based on the refraction index and Schlicks approximation.
  */
 public class Dielectric implements Material {
 
-    private static final Random rand = ThreadLocalRandom.current();
+    private static final SimpleRNG rand = SimpleRNG.get();
 
     /** Refraction index */
     private final float refIdx;

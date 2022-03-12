@@ -7,13 +7,12 @@ import org.rhx.graphics.jaytracer.core.Vec3;
 import org.rhx.graphics.jaytracer.scene.SceneDescription;
 import org.rhx.graphics.jaytracer.util.HitRecord;
 import org.rhx.graphics.jaytracer.util.Ref;
+import org.rhx.graphics.jaytracer.util.SimpleRNG;
 import org.rhx.window.Stats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.sqrt;
 import static org.rhx.graphics.jaytracer.core.Vec3.*;
@@ -28,7 +27,7 @@ public class Jaytracer {
     private final BufferedImage drawable;
     private final int scrWidth;
     private final int scrHeight;
-    private final Random rand;
+    private static final SimpleRNG rand = SimpleRNG.get();
 
     private Hitable world;
     private Camera camera;
@@ -42,7 +41,6 @@ public class Jaytracer {
 
     public Jaytracer(int nrOfSamplesPerPixel, BufferedImage image) {
         this.nrOfSamplesPerPixel = nrOfSamplesPerPixel;
-        this.rand = ThreadLocalRandom.current();
         this.drawable = image;
         this.scrWidth = image.getWidth();
         this.scrHeight = image.getHeight();

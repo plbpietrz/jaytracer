@@ -2,9 +2,7 @@ package org.rhx.graphics.jaytracer;
 
 import org.rhx.graphics.jaytracer.core.Ray;
 import org.rhx.graphics.jaytracer.core.Vec3;
-
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import org.rhx.graphics.jaytracer.util.SimpleRNG;
 
 /**
  * Camera object with adjustable position, filed of view and focus.
@@ -19,7 +17,7 @@ public class Camera {
     private final float lensRadius;
     private final float t0, t1;
 
-    private static final Random rand = ThreadLocalRandom.current();
+    private static final SimpleRNG rand = SimpleRNG.get();
 
     private Camera(Vec3 lookFrom, Vec3 lookAt, Vec3 vup, float vFov, float aspect, float aperture, float focusDist, float startTime, float endTime) {
         double theta = vFov * Math.PI / 180;

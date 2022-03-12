@@ -1,7 +1,6 @@
 package org.rhx.graphics.jaytracer.core;
 
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import org.rhx.graphics.jaytracer.util.SimpleRNG;
 
 import static java.lang.Math.sqrt;
 
@@ -10,7 +9,7 @@ import static java.lang.Math.sqrt;
  */
 public class Vec3 implements Comparable<Vec3> {
 
-    private static final Random rand = ThreadLocalRandom.current();
+    private static final SimpleRNG rand = SimpleRNG.get();
 
     public static final Vec3 ZERO = new Vec3(0.0f, 0.0f, 0.0f);
 

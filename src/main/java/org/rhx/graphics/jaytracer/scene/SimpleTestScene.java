@@ -11,6 +11,9 @@ import org.rhx.graphics.jaytracer.material.Lambertian;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.rhx.graphics.jaytracer.core.Vec3.len;
+import static org.rhx.graphics.jaytracer.core.Vec3.sub;
+
 public class SimpleTestScene implements SceneDescription {
 
 
@@ -28,7 +31,7 @@ public class SimpleTestScene implements SceneDescription {
     public Camera getCamera(int width, int height) {
         Vec3 lookFrom = Vec3.of(1f, 4f, 8f);
         Vec3 lookAt = Vec3.of(0f, .5f, 0f);
-        float distToFocus = Vec3.len(Vec3.sub(lookFrom, lookAt));
+        float distToFocus = len(sub(lookFrom, lookAt));
         float aperture = .1f;
 
         return Camera.of(

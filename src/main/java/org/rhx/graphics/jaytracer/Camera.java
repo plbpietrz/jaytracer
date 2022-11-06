@@ -4,6 +4,8 @@ import org.rhx.graphics.jaytracer.core.Ray;
 import org.rhx.graphics.jaytracer.core.Vec3;
 import org.rhx.graphics.jaytracer.util.SimpleRNG;
 
+import static org.rhx.graphics.jaytracer.core.Vec3.*;
+
 /**
  * Camera object with adjustable position, filed of view and focus.
  */
@@ -24,19 +26,19 @@ public class Camera {
         float halfHeight = (float) Math.tan(theta / 2d);
         float halfWidth = aspect * halfHeight;
 
-        Vec3 w = Vec3.unit(Vec3.sub(lookFrom, lookAt));
-        u = Vec3.unit(Vec3.cross(vup, w));
-        v = Vec3.cross(w, u);
+        Vec3 w = unit(sub(lookFrom, lookAt));
+        u = unit(cross(vup, w));
+        v = cross(w, u);
 
         origin          = lookFrom;
-        lowerLeftCorner = Vec3.sub(
+        lowerLeftCorner = sub(
                 origin,
-                Vec3.mul(halfWidth * focusDist, u),
-                Vec3.mul(halfHeight * focusDist, v),
-                Vec3.mul(focusDist, w)
+                mul(halfWidth * focusDist, u),
+                mul(halfHeight * focusDist, v),
+                mul(focusDist, w)
         );
-        horizontal      = Vec3.mul(2f * halfWidth * focusDist, u);
-        vertical        = Vec3.mul(2f * halfHeight * focusDist, v);
+        horizontal      = mul(2f * halfWidth * focusDist, u);
+        vertical        = mul(2f * halfHeight * focusDist, v);
         lensRadius      = aperture / 2f;
         t0 = startTime;
         t1 = endTime;
@@ -49,17 +51,16 @@ public class Camera {
      * @return ray perpendicular to the camera plane at coordinates (s, t)
      */
     public Ray getRay(float s, float t) {
-        Vec3 rd = Vec3.mul(lensRadius, Vec3.rvius());
-        Vec3 offset = Vec3.add(Vec3.mul(rd.x(), u), Vec3.mul(rd.y(), v));
+        Vec3 rd = mul(lensRadius, rvius());
+        Vec3 offset = add(mul(rd.x(), u), mul(rd.y(), v));
         float time = t0 + rand.nextFloat()*(t1 - t0);
         return Ray.of(
-                Vec3.add(origin, offset),
-                Vec3.add(
-                        lowerLeftCorner,
-                        Vec3.mul(s, horizontal),
-                        Vec3.mul(t, vertical),
-                        Vec3.neg(origin),
-                        Vec3.neg(offset)),
+                add(origin, offset),
+                add(lowerLeftCorner,
+                    mul(s, horizontal),
+                    mul(t, vertical),
+                    neg(origin),
+                    neg(offset)),
                 time);
     }
 

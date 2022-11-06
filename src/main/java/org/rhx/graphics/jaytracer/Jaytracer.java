@@ -1,6 +1,5 @@
 package org.rhx.graphics.jaytracer;
 
-import org.rhx.graphics.jaytracer.bvh.BVHNode;
 import org.rhx.graphics.jaytracer.core.Hitable;
 import org.rhx.graphics.jaytracer.core.Ray;
 import org.rhx.graphics.jaytracer.core.Vec3;
@@ -8,13 +7,15 @@ import org.rhx.graphics.jaytracer.scene.SceneDescription;
 import org.rhx.graphics.jaytracer.util.HitRecord;
 import org.rhx.graphics.jaytracer.util.Ref;
 import org.rhx.graphics.jaytracer.util.SimpleRNG;
-import org.rhx.window.Stats;
+import org.rhx.window.RenderStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Math.sqrt;
+import static java.lang.System.currentTimeMillis;
 import static org.rhx.graphics.jaytracer.core.Vec3.*;
 
 /**
@@ -23,89 +24,90 @@ import static org.rhx.graphics.jaytracer.core.Vec3.*;
 public class Jaytracer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Jaytracer.class);
+    private static final SimpleRNG rand = SimpleRNG.get();
 
     private final BufferedImage drawable;
     private final int scrWidth;
     private final int scrHeight;
-    private static final SimpleRNG rand = SimpleRNG.get();
+    private final int raysPerPixel;
 
     private Hitable world;
     private Camera camera;
-
-    private volatile int nrOfPixelDone = 0;
-
-    private final int nrOfSamplesPerPixel;
-    private int currRaysDone;
-    private int lastRaysDone;
     private Runnable onFinish;
+    private RenderStatistics renderStatistics;
 
-    public Jaytracer(int nrOfSamplesPerPixel, BufferedImage image) {
-        this.nrOfSamplesPerPixel = nrOfSamplesPerPixel;
+    private final AtomicInteger nrOfPixelDone;
+    private final AtomicInteger currRaysDone;
+    private final AtomicInteger lastRaysDone;
+    private long renderTime;
+
+
+    public Jaytracer(int raysPerPixel, BufferedImage image) {
+        this.raysPerPixel = raysPerPixel;
         this.drawable = image;
         this.scrWidth = image.getWidth();
         this.scrHeight = image.getHeight();
+        this.currRaysDone = new AtomicInteger(0);
+        this.lastRaysDone = new AtomicInteger(0);
+        this.nrOfPixelDone = new AtomicInteger(0);
+        this.renderStatistics = new RenderStatistics(0, 1, 0, 0);
     }
 
     public void draw(SceneDescription sceneDescription) {
-//        this.world = sceneDescription.getSceneDescription();
-        this.world = BVHNode.of(sceneDescription.getSceneDescription(), 0.f, 1.f);
-        this.camera = sceneDescription.getCamera(scrWidth, scrHeight);
+        world = sceneDescription.getSceneDescription();
+//        world = BVHNode.of(sceneDescription.getSceneDescription(), 0.f, 1.f);
+        camera = sceneDescription.getCamera(scrWidth, scrHeight);
+        resetStatistics();
 
-        long start = System.currentTimeMillis();
-
+        long start = currentTimeMillis();
         for (int j = scrHeight - 1; j >= 0; j--) {
-
             for (int i = 0; i < scrWidth; i++) {
                 renderPoint(i, j, false);
-                nrOfPixelDone = (scrHeight - j) * scrWidth + i;
             }
 
         }
+        renderTime = currentTimeMillis() - start;
 
-        LOG.info("Frame time is {}[ms]", System.currentTimeMillis() - start);
         if (onFinish != null)
             onFinish.run();
     }
 
-    public Stats getStats() {
-        if (scrWidth == 0 || scrHeight == 0) {
-            return new Stats(0, 1, 0);
-        } else {
-            int rays = currRaysDone - lastRaysDone;
-            lastRaysDone = currRaysDone;
-            return new Stats(nrOfPixelDone + 1, scrWidth * scrHeight, rays);
+    public RenderStatistics getStats() {
+        int lastRays = lastRaysDone.get();
+        int currentRays = currRaysDone.get();
+        if (currentRays != lastRays) {
+            renderStatistics = new RenderStatistics(
+                    nrOfPixelDone.get(),
+                    scrWidth * scrHeight,
+                    currentRays - lastRays,
+                    renderTime);
+            lastRaysDone.set(currentRays);
         }
+        return renderStatistics;
     }
 
     private void renderPoint(int i, int j, boolean debug) {
-        Vec3 color = Vec3.ZERO;
-        for (int s = 0; s < nrOfSamplesPerPixel; ++s) {
+        Vec3 color = ZERO;
+        for (int s = 0; s < raysPerPixel; ++s) {
             float u = (i + rand.nextFloat())/(float)scrWidth;
             float v = (j + rand.nextFloat())/(float)scrHeight;
             Ray r = camera.getRay(u, v);
             Ray.pap(2f, r);
-            color = Vec3.add(color, trace(r, 0));
-            currRaysDone += 1;
+            color = add(color, trace(r, 0));
+            currRaysDone.incrementAndGet();
         }
-        color = Vec3.div(color, (float) nrOfSamplesPerPixel);
+        color = div(color, (float) raysPerPixel);
 
         color = Vec3.of(sqrt(color.r()),sqrt(color.g()),sqrt(color.b()));
 
         if (debug)
-            LOG.info("Point: ({}, {}) | Color:{}", i, j, color);
+            LOG.debug("Point: ({}, {}) | Color:{}", i, j, color);
         int ic = 0;
         ic |= ((int) (255.99f * color.r())) << 16;
         ic |= ((int) (255.99f * color.g())) << 8;
         ic |= ((int) (255.99f * color.b()));
         drawable.setRGB(i, scrHeight - j - 1, ic);
-    }
-
-    public void drawPixelOn(int i, int j) {
-        long start = System.currentTimeMillis();
-
-        renderPoint(i, j, true);
-
-        LOG.info("Point time is {}[ms]", System.currentTimeMillis() - start);
+        nrOfPixelDone.incrementAndGet();
     }
 
     private Vec3 trace(Ray ray, int depth) {
@@ -115,9 +117,9 @@ public class Jaytracer {
             Ref<Vec3> attenuation = Ref.empty();
 
             if (depth < 50 && rec.mat.scatter(ray, rec, attenuation, scattered)) {
-                return Vec3.mul(attenuation.get(), trace(scattered.get(), depth + 1));
+                return mul(attenuation.get(), trace(scattered.get(), depth + 1));
             } else {
-                return Vec3.ZERO;
+                return ZERO;
             }
         } else {
             Vec3 unitDir = unit(ray.dir);
@@ -128,8 +130,29 @@ public class Jaytracer {
         }
     }
 
+    private void resetStatistics() {
+        renderTime = 0;
+        currRaysDone.set(0);
+        lastRaysDone.set(0);
+        nrOfPixelDone.set(0);
+    }
+
+    public void drawPixelOn(int i, int j) {
+        long start = currentTimeMillis();
+        currRaysDone.set(0);
+        lastRaysDone.set(0);
+
+        renderPoint(i, j, true);
+
+        LOG.info("Point time is {}[ms]", currentTimeMillis() - start);
+    }
+
     public void onRenderFinish(Runnable onFinish) {
         this.onFinish = onFinish;
+    }
+
+    public BufferedImage getImage() {
+        return drawable;
     }
 
 }

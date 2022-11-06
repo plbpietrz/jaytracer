@@ -154,7 +154,7 @@ public class Vec3 implements Comparable<Vec3> {
         Vec3 p;
         do {
             p = new Vec3(2f * rand.nextFloat() - 1f, 2f * rand.nextFloat() - 1f, 2f * rand.nextFloat() - 1f);
-        } while (Vec3.dot(p, p) >= 1f);
+        } while (dot(p, p) >= 1f);
         return p;
     }
 

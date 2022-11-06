@@ -61,8 +61,8 @@ public class Sphere implements Hitable {
     @Override
     public AABB boundingBox(float t0, float t1) {
         return AABB.of(
-                Vec3.sub(center, Vec3.of(radius, radius, radius)),
-                Vec3.add(center, Vec3.of(radius, radius, radius)));
+                sub(center, Vec3.of(radius, radius, radius)),
+                add(center, Vec3.of(radius, radius, radius)));
     }
 
 }

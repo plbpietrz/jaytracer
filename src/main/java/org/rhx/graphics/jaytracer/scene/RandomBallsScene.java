@@ -13,6 +13,8 @@ import org.rhx.graphics.jaytracer.util.SimpleRNG;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.rhx.graphics.jaytracer.core.Vec3.*;
+
 public class RandomBallsScene implements SceneDescription {
 
     private HitableList sceneDescription;
@@ -38,11 +40,11 @@ public class RandomBallsScene implements SceneDescription {
             for (int b = -11; b < 11; ++b) {
                 float chooseMat = rand.nextFloat();
                 Vec3 center = Vec3.of(a + .9f * rand.nextFloat(), .2f, b + .9f * rand.nextFloat());
-                if (Vec3.len(Vec3.sub(center, Vec3.of(4f, .2f, 0f))) > .9f) {
+                if (len(sub(center, Vec3.of(4f, .2f, 0f))) > .9f) {
                     if (chooseMat < .8f) {
                         hitable.add(
                                 Sphere.of(
-                                        Vec3.add(center, Vec3.of(0f, .5f * rand.nextFloat(), 0f )),
+                                        add(center, Vec3.of(0f, .5f * rand.nextFloat(), 0f )),
                                         .2f,
                                         Lambertian.of(
                                                 Vec3.of(

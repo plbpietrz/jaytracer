@@ -7,10 +7,8 @@ import org.rhx.graphics.jaytracer.core.Vec3;
 import org.rhx.graphics.jaytracer.material.Material;
 import org.rhx.graphics.jaytracer.util.HitRecord;
 
-import static java.lang.Math.sqrt;
-import static org.rhx.graphics.jaytracer.core.Vec3.div;
-import static org.rhx.graphics.jaytracer.core.Vec3.dot;
-import static org.rhx.graphics.jaytracer.core.Vec3.sub;
+import static java.lang.Math.*;
+import static org.rhx.graphics.jaytracer.core.Vec3.*;
 
 public class MovingSphere implements Hitable {
 
@@ -64,11 +62,12 @@ public class MovingSphere implements Hitable {
     }
 
     public Vec3 center(float time) {
-        return Vec3.add(
+        return add(
                 center0,
-                Vec3.mul(
+                mul(
                     ((time - time0)/(time1-time0)),
-                    Vec3.sub(center1, center0)
+//                    abs(1-(float) sqrt(1- pow(time - 1,2))),
+                    sub(center1, center0)
                 )
         );
     }
@@ -76,11 +75,11 @@ public class MovingSphere implements Hitable {
     @Override
     public AABB boundingBox(float t0, float t1) {
         AABB box0 = AABB.of(
-                Vec3.sub(center0, Vec3.of(radius, radius, radius)),
-                Vec3.add(center0, Vec3.of(radius, radius, radius)));
+                sub(center0, Vec3.of(radius, radius, radius)),
+                add(center0, Vec3.of(radius, radius, radius)));
         AABB box1 = AABB.of(
-                Vec3.sub(center1, Vec3.of(radius, radius, radius)),
-                Vec3.add(center1, Vec3.of(radius, radius, radius)));
+                sub(center1, Vec3.of(radius, radius, radius)),
+                add(center1, Vec3.of(radius, radius, radius)));
         return AABB.of(box0, box1);
     }
 }

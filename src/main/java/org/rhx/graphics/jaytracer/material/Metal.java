@@ -5,10 +5,11 @@ import org.rhx.graphics.jaytracer.core.Ray;
 import org.rhx.graphics.jaytracer.core.Vec3;
 import org.rhx.graphics.jaytracer.util.HitRecord;
 
+import static org.rhx.graphics.jaytracer.core.Vec3.*;
 import static org.rhx.graphics.jaytracer.util.FMath.fmin;
 
 /**
- * Metal material definition. Will bounce the {@link Ray} in a defined way, with a small variance base on the
+ * Metal material definition. Will bounce the {@link Ray} in a defined way, with a small variance based on the
  * fuzz parameter.
  */
 public class Metal implements Material {
@@ -23,14 +24,14 @@ public class Metal implements Material {
 
     @Override
     public boolean scatter(Ray rayIn, HitRecord rec, Ref<Vec3> attenuation, Ref<Ray> scattered) {
-        Vec3 reflected = reflect(Vec3.unit(rayIn.dir), rec.norm);
-        scattered.set(Ray.of(rec.pnt, Vec3.add(reflected, Vec3.mul(fuzz, Vec3.rvius()))));
+        Vec3 reflected = reflect(unit(rayIn.dir), rec.norm);
+        scattered.set(Ray.of(rec.pnt, add(reflected, mul(fuzz, rvius()))));
         attenuation.set(albedo);
-        return Vec3.dot(scattered.get().dir, rec.norm) > 0;
+        return dot(scattered.get().dir, rec.norm) > 0;
     }
 
-    private Vec3 reflect(Vec3 v, Vec3 n) {
-        return Vec3.sub(v, Vec3.mul(2f * Vec3.dot(v, n), n));
+    private static Vec3 reflect(Vec3 v, Vec3 n) {
+        return sub(v, mul(2f * dot(v, n), n));
     }
 
     public static Metal of(Vec3 albedo, float fuzz) {

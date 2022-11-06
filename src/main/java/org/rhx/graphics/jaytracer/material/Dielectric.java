@@ -6,6 +6,8 @@ import org.rhx.graphics.jaytracer.util.HitRecord;
 import org.rhx.graphics.jaytracer.util.Ref;
 import org.rhx.graphics.jaytracer.util.SimpleRNG;
 
+import static org.rhx.graphics.jaytracer.core.Vec3.*;
+
 /**
  * Dielectric material definition. Scatters and reflects light based on the refraction index and Schlicks approximation.
  */
@@ -26,14 +28,14 @@ public class Dielectric implements Material {
         Vec3 outwardNormal;
         attenuation.set(Vec3.of(1f, 1f, 1f));
 
-        if (Vec3.dot(rayIn.dir, rec.norm) > 0f) {
-            outwardNormal = Vec3.neg(rec.norm);
+        if (dot(rayIn.dir, rec.norm) > 0f) {
+            outwardNormal = neg(rec.norm);
             ni_over_nt = refIdx;
-            cosine = refIdx + Vec3.dot(rayIn.dir, rec.norm) / Vec3.len(rayIn.dir);
+            cosine = refIdx + dot(rayIn.dir, rec.norm) / len(rayIn.dir);
         } else {
             outwardNormal = rec.norm;
             ni_over_nt = 1f / refIdx;
-            cosine = -Vec3.dot(rayIn.dir, rec.norm) / Vec3.len(rayIn.dir);
+            cosine = -dot(rayIn.dir, rec.norm) / len(rayIn.dir);
         }
 
         Ref<Vec3> refracted = Ref.empty();
@@ -51,16 +53,16 @@ public class Dielectric implements Material {
         return true;
     }
 
-    private Vec3 reflect(Vec3 v, Vec3 n) {
-        return Vec3.sub(v, Vec3.mul(2f * Vec3.dot(v, n), n));
+    private static Vec3 reflect(Vec3 v, Vec3 n) {
+        return sub(v, mul(2f * dot(v, n), n));
     }
 
-    private boolean refract(Vec3 v, Vec3 n, float ni_over_nt, Ref<Vec3> refracted) {
-        Vec3 uv = Vec3.unit(v);
-        float dt = Vec3.dot(uv, n);
+    private static boolean refract(Vec3 v, Vec3 n, float ni_over_nt, Ref<Vec3> refracted) {
+        Vec3 uv = unit(v);
+        float dt = dot(uv, n);
         float discriminant = 1f - ni_over_nt * ni_over_nt * (1 - dt * dt);
         if (discriminant > 0f) {
-            refracted.set(Vec3.sub(Vec3.mul(ni_over_nt, Vec3.sub(uv, Vec3.mul(dt, n))), Vec3.mul((float) Math.sqrt(discriminant), n)));
+            refracted.set(sub(mul(ni_over_nt, sub(uv, mul(dt, n))), mul((float) Math.sqrt(discriminant), n)));
             return true;
         } else {
             return false;

@@ -1,7 +1,7 @@
 package org.rhx.window;
 
 import org.rhx.graphics.jaytracer.Jaytracer;
-import org.rhx.graphics.jaytracer.scene.RandomBallsScene;
+import org.rhx.graphics.jaytracer.scene.SceneDescription;
 import org.rhx.graphics.jaytracer.scene.Static9BallsScene;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class MainFrame extends JFrame {
@@ -22,13 +23,63 @@ public class MainFrame extends JFrame {
 
     public static final String TITLE = "Jaytracer";
 
+    private static final SceneDescription SCENE_DESCRIPTION = Static9BallsScene.get();
 
     public static void main(String[] args) {
-        BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        Map<Option, Object> options = Option.parseArgs(args);
 
+        BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        Jaytracer renderer = getJaytracer(image);
+
+        if (options.containsKey(Option.BENCHMARK)) {
+            LOG.info("Benchmark mode: ON");
+            benchmark(options, renderer);
+            return;
+        }
+
+        MainFrame mainFrame = new MainFrame();
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        mainFrame.add(getDrawPanel(image, renderer));
+        mainFrame.getContentPane().setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        mainFrame.pack();
+        mainFrame.setTitle(TITLE);
+
+        new Thread(() -> statsLoop(renderer, mainFrame)).start();
+
+        mainFrame.setVisible(true);
+    }
+
+    private static void statsLoop(Jaytracer renderer, MainFrame mainFrame) {
+        try {
+            RenderStatistics currentRenderStats, previousRenderStats = null;
+            while (true) {
+                currentRenderStats = renderer.getStats();
+
+                int percent = (int) (((float) currentRenderStats.pixelsRendered / (float) currentRenderStats.pixelsToRender) * 100f);
+                mainFrame.setTitle(String.format("%s [%d%%]", TITLE, percent));
+
+                if (!currentRenderStats.equals(previousRenderStats)) {
+                    if (percent != 0)
+                        LOG.info("Speed {}[r/s]", currentRenderStats.raysFromLastCheck);
+                    if (currentRenderStats.pixelsRendered == currentRenderStats.pixelsToRender)
+                        LOG.info("Frame time is {}[ms]", currentRenderStats.renderTime);
+                    previousRenderStats = currentRenderStats;
+                }
+
+                TimeUnit.SECONDS.sleep(1L);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static JPanel getDrawPanel(BufferedImage image, Jaytracer renderer) {
         JPanel drawPanel = new JPanel() {
-            //init panel size
-            {setSize(image.getWidth(), image.getHeight());}
+
+            {
+                BufferedImage image = renderer.getImage();
+                setSize(image.getWidth(), image.getHeight());
+            }
 
             @Override
             protected void paintComponent(Graphics g) {
@@ -37,15 +88,12 @@ public class MainFrame extends JFrame {
             }
         };
 
-        Jaytracer renderer = getJaytracer(image);
         renderer.onRenderFinish(drawPanel::repaint);
 
         drawPanel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//                new Thread(() -> renderer.draw(new SimpleTestScene())).start();
-                new Thread(() -> renderer.draw(Static9BallsScene.get())).start();
-//                new Thread(() -> renderer.draw(RandomBallsScene.get())).start();
+                new Thread(() -> renderer.draw(SCENE_DESCRIPTION)).start();
             }
 
             @Override
@@ -68,33 +116,17 @@ public class MainFrame extends JFrame {
 
             }
         });
+        return drawPanel;
+    }
 
-        MainFrame mainFrame = new MainFrame();
-        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        mainFrame.add(drawPanel);
-        mainFrame.getContentPane().setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        mainFrame.pack();
-        mainFrame.setTitle(TITLE);
-
-        new Thread(() -> {
-            try {
-                int percent = 0;
-                while (percent != 100) {
-                    Stats stats = renderer.getStats();
-                    if (stats == null)
-                        break;
-                    percent = (int) (((float) stats.done / (float) stats.max) * 100f);
-                    mainFrame.setTitle(String.format("%s [%d%%]", TITLE, percent));
-                    if (percent != 0)
-                        LOG.info("Speed {}[r/s]", stats.rays);
-                    TimeUnit.SECONDS.sleep(1L);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-        mainFrame.setVisible(true);
+    private static void benchmark(Map<Option, Object> options, Jaytracer renderer) {
+        Integer count = (Integer) options.get(Option.BENCHMARK);
+        count = count == null ? 1 : count;
+        int iteration = 1;
+        while (count-- > 0) {
+            LOG.info("Iteration: {}", iteration++);
+            renderer.draw(SCENE_DESCRIPTION);
+        }
     }
 
     private static Jaytracer getJaytracer(BufferedImage image) {
